@@ -4,3 +4,10 @@
 
 /obj/Debug
 /.vs/PhoneTrafficService
+/packages
+/PhoneTrafficService/.vs
+/PhoneTrafficService/bin/Debug
+/PhoneTrafficService/obj/Debug
+/PhoneTrafficService/packages/System.Configuration.ConfigurationManager.8.0.1
+/PhoneTrafficServiceTest/bin/Debug
+/PhoneTrafficServiceTest/obj/Debug
