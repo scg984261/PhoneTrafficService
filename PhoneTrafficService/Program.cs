@@ -10,11 +10,23 @@ using NPOI.SS.UserModel;
 
 namespace PhoneTrafficService
 {
+
+    /*
+     * TODO:
+     * 
+     * Set the header of Phone Numbers Allocated if it's not set already.
+     * Testing
+     * Logging
+     * Different format of INCOMING.csv
+     * Installer package - how do we get this thing onto the server?
+     * MSI Installer?
+     */
     public class Program
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));
 
-        public static string incomingFileLocation = GetIncomingFilePathFromConfig();
+        public static string IncomingFileLocation { get; set; } = ConfigurationManager.AppSettings.Get("IncomingFilePath");
+        public static string PhoneNumbersAllocated { get; set; } = ConfigurationManager.AppSettings.Get("PhoneNumbersAllocatedSpreadsheet");
 
         static Program()
         {
@@ -24,14 +36,14 @@ namespace PhoneTrafficService
         public static void Main(string[] args)
         {   
             log.Info("Start of Application.");
-            log.Info($"File location read from config: {incomingFileLocation}");
+            log.Info($"File location read from config: {IncomingFileLocation}");
 
-            string[] lines = File.ReadAllLines(incomingFileLocation).Skip(1).ToArray();
+            string[] lines = File.ReadAllLines(IncomingFileLocation).Skip(1).ToArray();
 
             string ddiNumber;
             string numberOfCalls;
             int numberOfCallsInt;
-            Dictionary<string, int> incomingCallsDictionary = new Dictionary<string, int>();
+            Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>();
 
             foreach (string line in lines)
             {
@@ -43,16 +55,16 @@ namespace PhoneTrafficService
 
                 if (int.TryParse(numberOfCalls, out numberOfCallsInt))
                 {
-                    incomingCallsDictionary.Add(ddiNumber, numberOfCallsInt);
+                    incomingCallsDictionary.Add(ddiNumber, numberOfCallsInt.ToString());
                 }
                 else
                 {
-                    log.Error($"Error occurred attempting to convert number of calls: {numberOfCalls} to an integer type!");
-                    incomingCallsDictionary.Add(ddiNumber, 0);
+                    log.Error($"Error occurred reading number of calls: {numberOfCalls} is not an integer!");
+                    incomingCallsDictionary.Add(ddiNumber, "0");
                 }
             }
 
-            string spreadsheetFileName = ConfigurationManager.AppSettings.Get("PhoneNumbersAllocatedSpreadsheet");
+            string spreadsheetFileName = PhoneNumbersAllocated;
 
             HSSFWorkbook hssfwb;
 
@@ -63,6 +75,14 @@ namespace PhoneTrafficService
             }
 
             ISheet sheet = hssfwb.GetSheetAt(0);
+
+            IRow headerRow = sheet.GetRow(0);
+            ICell trafficHeaderCell = headerRow.GetCell(4);
+
+            if (trafficHeaderCell.StringCellValue != "Traffic")
+            {
+                trafficHeaderCell.SetCellValue("Traffic");
+            }
 
             int lastRowNumber = sheet.LastRowNum;
 
@@ -86,7 +106,7 @@ namespace PhoneTrafficService
 
                 string phoneNumbersAllocatedDdiNumberLastTenDigits = phoneNumbersAllocatedDdiNumber.Substring(Math.Max(0, phoneNumbersAllocatedDdiNumber.Length - 10));
 
-                int numberOfCallsNew;
+                string numberOfCallsNew;
 
                 if (incomingCallsDictionary.TryGetValue(phoneNumbersAllocatedDdiNumberLastTenDigits, out numberOfCallsNew))
                 {
@@ -94,7 +114,7 @@ namespace PhoneTrafficService
                 }
                 else if (phoneNumbersAllocatedDdiNumberLastTenDigits.Length > 0)
                 {
-                    cellE.SetCellValue(0);
+                    cellE.SetCellValue("0");
                 }
                 else
                 {
@@ -107,11 +127,6 @@ namespace PhoneTrafficService
                 hssfwb.Write(file);
                 file.Close();
             }
-        }
-
-        public static string GetIncomingFilePathFromConfig()
-        {
-            return ConfigurationManager.AppSettings.Get("IncomingFilePath");
         }
     }
 }
