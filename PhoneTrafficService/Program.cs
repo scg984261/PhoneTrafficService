@@ -14,7 +14,6 @@ namespace PhoneTrafficService
     /*
      * TODO:
      * 
-     * Set the header of Phone Numbers Allocated if it's not set already.
      * Testing
      * Logging
      * Different format of INCOMING.csv
@@ -34,98 +33,69 @@ namespace PhoneTrafficService
         }
 
         public static void Main(string[] args)
-        {   
+        {
             log.Info("Start of Application.");
-            log.Info($"File location read from config: {IncomingFileLocation}");
+            log.Info($"File location read from config: {IncomingFileLocation}.");
 
-            string[] lines = File.ReadAllLines(IncomingFileLocation).Skip(1).ToArray();
+            string[] lines = ReadLinesFromFile(IncomingFileLocation);
 
-            string ddiNumber;
-            string numberOfCalls;
-            int numberOfCallsInt;
             Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>();
 
+            PopulateIncomingCalls(incomingCallsDictionary, lines);
+
+            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler(PhoneNumbersAllocated);
+            spreadsheetHandler.SetHeader();
+            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary);
+            spreadsheetHandler.SaveWorkbook();
+        }
+
+        public static string[] ReadLinesFromFile(string path)
+        {
+            try
+            {
+                return File.ReadAllLines(path).Skip(1).ToArray();
+            }
+            catch (Exception exception)
+            {
+                log.Fatal(exception);
+                throw exception;
+            }
+        }
+
+        public static void PopulateIncomingCalls(Dictionary<string, string> incomingCalls, string[] lines)
+        {
             foreach (string line in lines)
             {
-                // N.B. It seems there are two formats of INCOMING.CSV now - with one having total number of calls in one column,
-                // and the old one had incoming and outgoing calls in separate columns.
-                string[] columns = line.Split(',');
-                ddiNumber = columns[0];
-                numberOfCalls = columns[1];
-
-                if (int.TryParse(numberOfCalls, out numberOfCallsInt))
-                {
-                    incomingCallsDictionary.Add(ddiNumber, numberOfCallsInt.ToString());
-                }
-                else
-                {
-                    log.Error($"Error occurred reading number of calls: {numberOfCalls} is not an integer!");
-                    incomingCallsDictionary.Add(ddiNumber, "0");
-                }
-            }
-
-            string spreadsheetFileName = PhoneNumbersAllocated;
-
-            HSSFWorkbook hssfwb;
-
-            using (FileStream fileStream = new FileStream(spreadsheetFileName, FileMode.Open, FileAccess.Read))
-            {
-                hssfwb = new HSSFWorkbook(fileStream);
-                fileStream.Close();
-            }
-
-            ISheet sheet = hssfwb.GetSheetAt(0);
-
-            IRow headerRow = sheet.GetRow(0);
-            ICell trafficHeaderCell = headerRow.GetCell(4);
-
-            if (trafficHeaderCell.StringCellValue != "Traffic")
-            {
-                trafficHeaderCell.SetCellValue("Traffic");
-            }
-
-            int lastRowNumber = sheet.LastRowNum;
-
-            // Start from cell 2, not top row.
-            for (int i = 1; i < lastRowNumber; i++)
-            {
-                IRow row = sheet.GetRow(i);
-                ICell cellE = row.CreateCell(4);
-
-                string phoneNumbersAllocatedDdiNumber;
-
                 try
                 {
-                    phoneNumbersAllocatedDdiNumber = row.GetCell(1).StringCellValue;
+                    ProcessCsvLine(incomingCalls, line);
                 }
                 catch (Exception exception)
                 {
+                    string errorMessage = $"Error occurred attempting to parse CSV line: {line}.";
+                    log.Error(errorMessage);
                     log.Error(exception);
-                    continue;
-                }
-
-                string phoneNumbersAllocatedDdiNumberLastTenDigits = phoneNumbersAllocatedDdiNumber.Substring(Math.Max(0, phoneNumbersAllocatedDdiNumber.Length - 10));
-
-                string numberOfCallsNew;
-
-                if (incomingCallsDictionary.TryGetValue(phoneNumbersAllocatedDdiNumberLastTenDigits, out numberOfCallsNew))
-                {
-                    cellE.SetCellValue(numberOfCallsNew);
-                }
-                else if (phoneNumbersAllocatedDdiNumberLastTenDigits.Length > 0)
-                {
-                    cellE.SetCellValue("0");
-                }
-                else
-                {
-                    continue;
                 }
             }
+        }
 
-            using (FileStream file = new FileStream(spreadsheetFileName, FileMode.Open, FileAccess.Write))
+        public static void ProcessCsvLine(Dictionary<string, string> incomingCalls, string line)
+        {
+            // N.B. It seems there are two formats of INCOMING.CSV now - with one having total number of calls in one column,
+            // and the old one had incoming and outgoing calls in separate columns.
+            string[] columns = line.Split(',');
+            string ddiNumber = columns[0];
+            string numberOfCalls = columns[1];
+            int numberOfCallsInt;
+
+            if (int.TryParse(numberOfCalls, out numberOfCallsInt))
             {
-                hssfwb.Write(file);
-                file.Close();
+                incomingCalls.Add(ddiNumber, numberOfCallsInt.ToString());
+            }
+            else
+            {
+                log.Error($"Error occurred reading number of calls: {numberOfCalls} is not an integer!");
+                incomingCalls.Add(ddiNumber, "0");
             }
         }
     }
