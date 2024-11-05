@@ -5,8 +5,6 @@ using System.IO;
 using System.Linq;
 using log4net;
 using log4net.Config;
-using NPOI.HSSF.UserModel;
-using NPOI.SS.UserModel;
 
 namespace PhoneTrafficService
 {
