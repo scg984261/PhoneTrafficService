@@ -15,6 +15,10 @@ namespace PhoneTrafficService
         public HSSFWorkbook Workbook { get; set; }
         public ISheet Sheet { get; set; }
 
+        public SpreadsheetHandler()
+        {
+        }
+
         public SpreadsheetHandler(string spreadsheetFilePath)
         {
             log.Debug($"Attempting to create Spreadsheet Handler with path: {spreadsheetFilePath}.");
@@ -35,6 +39,10 @@ namespace PhoneTrafficService
                 log.Error("Error occurred attempting to create Spreadsheet handler!");
                 log.Fatal(exception);
                 throw exception;
+            }
+            finally
+            {
+                log.Debug("Spreadsheet handler successfully created.");
             }
         }
 
@@ -60,40 +68,19 @@ namespace PhoneTrafficService
 
         public void PopulateIncomingCalls(Dictionary<string, string> incomingCallsDictionary)
         {
-            for (int currentRowNumber = 1; currentRowNumber < this.Sheet.LastRowNum; currentRowNumber++)
+            for (int currentRowNumber = 1; currentRowNumber <= this.Sheet.LastRowNum; currentRowNumber++)
             {
-                IRow row = this.Sheet.GetRow(currentRowNumber);
-                ICell cellE = row.CreateCell(4);
-
-                string ddiNumber = this.GetDdiNumberFromRow(row);
+                string ddiNumber = this.GetDdiNumberFromRow(this.Sheet.GetRow(currentRowNumber));
 
                 if (ddiNumber == string.Empty)
                 {
                     continue;
                 }
 
+                ICell cellE = this.Sheet.GetRow(currentRowNumber).CreateCell(4);
                 ddiNumber = this.GetLastTenDigits(ddiNumber);
-
-                string numberOfCalls;
-
-                if (incomingCallsDictionary.TryGetValue(ddiNumber, out numberOfCalls))
-                {
-                    string logMessage = $"Setting traffic column of row number: {currentRowNumber} to: {numberOfCalls}.";
-                    log.Debug(logMessage);
-                    cellE.SetCellValue(numberOfCalls);
-                }
-                else
-                {
-                    string logMessage = $"No match made for DDI Number: {ddiNumber} - setting traffic to 0 calls.";
-                    log.Debug(logMessage);
-                    cellE.SetCellValue("0");
-                }
+                this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
             }
-        }
-
-        public void PopulateTraffic(IRow row)
-        {
-
         }
 
         public string GetDdiNumberFromRow(IRow row)
@@ -108,6 +95,22 @@ namespace PhoneTrafficService
                 log.Error(errorMessage);
                 log.Error(exception);
                 return string.Empty;
+            }
+        }
+
+        public void PopulateTraffic(Dictionary<string, string> dictionary, string ddiNumber, ICell cell)
+        {
+            string numberOfCalls;
+
+            if (dictionary.TryGetValue(ddiNumber, out numberOfCalls))
+            {
+                log.Debug($"Setting traffic column of row number: {cell.Row.RowNum + 1} to: {numberOfCalls}.");
+                cell.SetCellValue(numberOfCalls);
+            }
+            else
+            {
+                log.Debug($"No match made for DDI Number: {ddiNumber} - setting traffic to 0 calls.");
+                cell.SetCellValue("0");
             }
         }
 
