@@ -104,7 +104,7 @@ namespace PhoneTrafficService
 
             if (dictionary.TryGetValue(ddiNumber, out numberOfCalls))
             {
-                log.Debug($"Setting traffic column of row number: {cell.Row.RowNum + 1} to: {numberOfCalls}.");
+                log.Debug($"Setting traffic column of row number: {cell.Address} to: {numberOfCalls}.");
                 cell.SetCellValue(numberOfCalls);
             }
             else
@@ -126,6 +126,8 @@ namespace PhoneTrafficService
                 this.Workbook.Write(file);
                 file.Close();
             }
+
+            log.Info("Workbook successfully saved.");
         }
     }
 }

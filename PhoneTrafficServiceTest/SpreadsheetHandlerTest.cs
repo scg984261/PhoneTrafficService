@@ -138,5 +138,157 @@ namespace PhoneTrafficServiceTest
 
             return workbook;
         }
+
+        [TestMethod]
+        public void TestGetDdiNumberFromRow_ShouldReturnDdiNumber()
+        {
+            // Arrange.
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet();
+            IRow row = sheet.CreateRow(0);
+            row.CreateCell(0).SetCellValue("Test Value.");
+            row.CreateCell(1).SetCellValue("013169730324");
+
+            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+
+            // Act.
+            string ddiNumber = spreadsheetHandler.GetDdiNumberFromRow(row);
+
+            // Assert.
+            Assert.AreEqual("013169730324", ddiNumber);
+        }
+
+        [TestMethod]
+        public void TestGetDdiNumberFromRow_ShouldCatchExceptionAndReturnEmptyString()
+        {
+            // Arrange.
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet();
+            IRow row = sheet.CreateRow(0);
+            row.CreateCell(0).SetCellValue("Test Value.");
+
+            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+
+            // Act.
+            string ddiNumber = spreadsheetHandler.GetDdiNumberFromRow(row);
+
+            // Assert.
+            Assert.AreEqual(string.Empty, ddiNumber);
+        }
+
+        [TestMethod]
+        public void TestPopulateTraffic_ShouldPopulateCellWithIncomingCalls()
+        {
+            // Arrange.
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet();
+            IRow row = sheet.CreateRow(0);
+            ICell cell = row.CreateCell(0);
+            cell.SetCellValue(string.Empty);
+
+            Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>
+            {
+                {
+                    "123446", "984"
+                },
+                {
+                    "98621347", "38425"
+                },
+                {
+                    "54832756", "948425"
+                }
+            };
+
+            string ddiNumber = "98621347";
+
+            SpreadsheetHandler spreadsheethandler = new SpreadsheetHandler();
+
+            // Act.
+            spreadsheethandler.PopulateTraffic(incomingCallsDictionary, ddiNumber, cell);
+
+            // Assert.
+            Assert.AreEqual("38425", cell.StringCellValue);
+        }
+
+        [TestMethod]
+        public void TestPopulateTraffic_ShouldPopulateCellWithPlaceHolderValue()
+        {
+            // Arrange.
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet();
+            IRow row = sheet.CreateRow(0);
+            ICell cell = row.CreateCell(0);
+            cell.SetCellValue(string.Empty);
+
+            Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>
+            {
+                {
+                    "123446", "984"
+                },
+                {
+                    "98621348", "38425"
+                },
+                {
+                    "54832756", "948425"
+                }
+            };
+
+            string ddiNumber = "98621347";
+
+            SpreadsheetHandler spreadsheethandler = new SpreadsheetHandler();
+
+            // Act.
+            spreadsheethandler.PopulateTraffic(incomingCallsDictionary, ddiNumber, cell);
+
+            // Assert.
+            Assert.AreEqual("0", cell.StringCellValue);
+        }
+
+        [TestMethod]
+        [DataRow("ABCDEFGHIJ0123456789", "0123456789")]
+        [DataRow("58432165974139874651268458", "4651268458")]
+        [DataRow("ABCDFGG!\"£$^&1236845", "$^&1236845")]
+        [DataRow("123", "123")]
+        [DataRow("ABCDEF", "ABCDEF")]
+        public void TestGetLastTenDigits_ShouldReturnLastTenDigits(string testString, string expected)
+        {
+            // Arrange.
+            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+
+            // Act.
+            string lastTenDigits = spreadsheetHandler.GetLastTenDigits(testString);
+
+            // Assert.
+            Assert.AreEqual(expected, lastTenDigits);
+        }
+
+        /*
+        [TestMethod]
+        public void TestSaveWorkbook()
+        {
+            // Arrange.
+            // File.Create(@"Resources\TestWorkbook.xls");
+
+            HSSFWorkbook testWorkbook= this.GetTestWorkbook();
+            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+            spreadsheetHandler.Workbook = testWorkbook;
+            spreadsheetHandler.Sheet = testWorkbook.GetSheetAt(0);
+            spreadsheetHandler.FilePath = @"Resources\TestWorkbook.xls";
+
+            // Act.
+            spreadsheetHandler.SaveWorkbook();
+
+            // Assert.
+        }
+        
+        [TestCleanup]
+        public void Cleanup()
+        {
+            if (File.Exists(@"Resources\TestWorkbook.xls"))
+            {
+                File.Delete(@"Resources\TestWorkbook.xls");
+            }
+        }
+        */
     }
 }
