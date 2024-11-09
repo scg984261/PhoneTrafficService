@@ -35,12 +35,12 @@ namespace PhoneTrafficService
             if (ApplicationRunMode == "ALBANY_HOUSE")
             {
                 runMode = RunMode.ALBANY_HOUSE;
-                CsvFileProcessor = new AlbanyHouseCsvFileProcessor();
+                CsvFileProcessor = new HudsonHouseCsvFileProcessor();
             }
             else if (ApplicationRunMode == "HUDSON_HOUSE")
             {
                 runMode = RunMode.HUDSON_HOUSE;
-                CsvFileProcessor = new HudsonHouseCsvFileProcessor();
+                CsvFileProcessor = new AlbanyHouseCsvFileProcessor();
             }
             else
             {

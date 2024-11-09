@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using log4net;
 
 namespace PhoneTrafficService.CsvFileProcessors
@@ -33,22 +33,26 @@ namespace PhoneTrafficService.CsvFileProcessors
 
         public void ProcessCsvLine(Dictionary<string, string> dictionary, string line)
         {
-            // N.B. It seems there are two formats of INCOMING.CSV now - with one having total number of calls in one column,
-            // and the old one had incoming and outgoing calls in separate columns.
-            string[] columns = line.Split(',');
-            string ddiNumber = columns[0];
-            string numberOfCalls = columns[1];
-            int numberOfCallsInt;
+            string[] stringArray = line.Split(',');
+            string ddiNumber = stringArray[0].Replace("\"", string.Empty);
+            int numberOfCalls = this.CalculateTotalNumberOfCalls(stringArray);
+            log.Debug($"Processed CSV line. DDI number: {ddiNumber}. Number of calls: {numberOfCalls}.");
+            dictionary.Add(ddiNumber, numberOfCalls.ToString());
+        }
 
-            if (int.TryParse(numberOfCalls, out numberOfCallsInt))
+        public int CalculateTotalNumberOfCalls(string[] stringArray)
+        {
+            try
             {
-                dictionary.Add(ddiNumber, numberOfCallsInt.ToString());
-                log.Debug($"Processed CSV line. DDI number: {ddiNumber}. Number of calls: {numberOfCalls}.");
+                int incomingCalls = int.Parse(stringArray[2]);
+                int outgoingCalls = int.Parse(stringArray[6]);
+                return incomingCalls + outgoingCalls;
             }
-            else
+            catch (Exception exception)
             {
-                log.Error($"Error occurred reading number of calls: {numberOfCalls} is not an integer!");
-                dictionary.Add(ddiNumber, "0");
+                log.Error($"Error occurred attempting process line from CSV file: {stringArray}.");
+                log.Error(exception);
+                return 0;
             }
         }
     }

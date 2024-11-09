@@ -8,7 +8,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
     public class CsvFileProcessorBaseTest
     {
         [TestMethod]
-        public void TestGetIncomingFilePathFromConfig_ShouldReturnValue()
+        public void TestConstructor_ShouldPopulateIncomingFileLocation()
         {
             CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase();
             string testConfigValue = testCsvFileProcessor.IncomingFileLocation;
@@ -41,6 +41,5 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
 
             testCsvFileProcessor.ReadLinesFromFile();
         }
-
     }
 }
