@@ -11,3 +11,8 @@
 /PhoneTrafficService/packages/System.Configuration.ConfigurationManager.8.0.1
 /PhoneTrafficServiceTest/bin/Debug
 /PhoneTrafficServiceTest/obj/Debug
+/PhoneTrafficService/bin
+/PhoneTrafficService/obj
+/PhoneTrafficServiceTest/bin/Release
+/PhoneTrafficServiceTest/obj/Release
+/publish
