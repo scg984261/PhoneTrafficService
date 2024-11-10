@@ -101,7 +101,7 @@ namespace PhoneTrafficServiceTest
             spreadsheetHandler.Sheet = testWorkbook.GetSheetAt(0);
 
             // Act.
-            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary);
+            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary, 10);
 
             // Assert.
             Assert.AreEqual("158", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(1).GetCell(4).StringCellValue);
@@ -188,15 +188,9 @@ namespace PhoneTrafficServiceTest
 
             Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>
             {
-                {
-                    "123446", "984"
-                },
-                {
-                    "98621347", "38425"
-                },
-                {
-                    "54832756", "948425"
-                }
+                { "123446", "984" },
+                { "98621347", "38425" },
+                { "54832756", "948425" }
             };
 
             string ddiNumber = "98621347";
@@ -222,15 +216,9 @@ namespace PhoneTrafficServiceTest
 
             Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>
             {
-                {
-                    "123446", "984"
-                },
-                {
-                    "98621348", "38425"
-                },
-                {
-                    "54832756", "948425"
-                }
+                { "123446", "984" },
+                { "98621348", "38425" },
+                { "54832756", "948425" }
             };
 
             string ddiNumber = "98621347";
@@ -245,50 +233,24 @@ namespace PhoneTrafficServiceTest
         }
 
         [TestMethod]
-        [DataRow("ABCDEFGHIJ0123456789", "0123456789")]
-        [DataRow("58432165974139874651268458", "4651268458")]
-        [DataRow("ABCDFGG!\"£$^&1236845", "$^&1236845")]
-        [DataRow("123", "123")]
-        [DataRow("ABCDEF", "ABCDEF")]
-        public void TestGetLastTenDigits_ShouldReturnLastTenDigits(string testString, string expected)
+        [DataRow("ABCDEFGHIJ0123456789", "0123456789", 10)]
+        [DataRow("58432165974139874651268458", "4651268458", 10)]
+        [DataRow("ABCDFGG!\"£$^&1236845", "$^&1236845", 10)]
+        [DataRow("123", "123", 10)]
+        [DataRow("ABCDEF", "ABCDEF", 10)]
+        [DataRow("08425987316", "5987316", 7)]
+        [DataRow("12389498745", "9498745", 7)]
+        [DataRow("59742568946", "2568946", 7)]
+        public void TestGetLastNCharacters_ShouldReturnLastNCharacters(string testString, string expected, int numberOfCharacters)
         {
             // Arrange.
             SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
 
             // Act.
-            string lastTenDigits = spreadsheetHandler.GetLastTenDigits(testString);
+            string lastTenDigits = spreadsheetHandler.GetLastNCharacters(testString, numberOfCharacters);
 
             // Assert.
             Assert.AreEqual(expected, lastTenDigits);
         }
-
-        /*
-        [TestMethod]
-        public void TestSaveWorkbook()
-        {
-            // Arrange.
-            // File.Create(@"Resources\TestWorkbook.xls");
-
-            HSSFWorkbook testWorkbook= this.GetTestWorkbook();
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
-            spreadsheetHandler.Workbook = testWorkbook;
-            spreadsheetHandler.Sheet = testWorkbook.GetSheetAt(0);
-            spreadsheetHandler.FilePath = @"Resources\TestWorkbook.xls";
-
-            // Act.
-            spreadsheetHandler.SaveWorkbook();
-
-            // Assert.
-        }
-        
-        [TestCleanup]
-        public void Cleanup()
-        {
-            if (File.Exists(@"Resources\TestWorkbook.xls"))
-            {
-                File.Delete(@"Resources\TestWorkbook.xls");
-            }
-        }
-        */
     }
 }

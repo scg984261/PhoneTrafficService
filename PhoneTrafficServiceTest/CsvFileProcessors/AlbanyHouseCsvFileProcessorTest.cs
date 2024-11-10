@@ -8,7 +8,21 @@ namespace PhoneTrafficServiceTest
     public class AlbanyHouseCsvFileProcessorTest
     {
         [TestMethod]
-        public void TestPopulateIncomingCalls_DdiNumberHasQuotationMarks()
+        public void TestConstructor()
+        {
+            AlbanyHouseCsvFileProcessor fileProcessor = new AlbanyHouseCsvFileProcessor("Test value.");
+            Assert.AreEqual("Test value.", fileProcessor.IncomingFileLocation);
+        }
+
+        [TestMethod]
+        public void TestConstructor_NoArgs()
+        {
+            AlbanyHouseCsvFileProcessor fileProcessor = new AlbanyHouseCsvFileProcessor();
+            Assert.AreEqual(string.Empty, fileProcessor.IncomingFileLocation);
+        }
+
+        [TestMethod]
+        public void TestPopulateIncomingCalls_DdiNumberHasInvertedCommas()
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
@@ -87,13 +101,111 @@ namespace PhoneTrafficServiceTest
 
             testFileProcessor.PopulateIncomingCalls(dictionary, lines);
 
+            string numberOfCalls;
 
+            Assert.IsTrue(dictionary.TryGetValue(string.Empty, out numberOfCalls));
+            Assert.AreEqual("5", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("578874", out numberOfCalls));
+            Assert.AreEqual("9", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("578876", out numberOfCalls));
+            Assert.AreEqual("5", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("578877", out numberOfCalls));
+            Assert.AreEqual("6", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("578878", out numberOfCalls));
+            Assert.AreEqual("25", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("1061185", out numberOfCalls));
+            Assert.AreEqual("66", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("1061186", out numberOfCalls));
+            Assert.AreEqual("5", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("1061187", out numberOfCalls));
+            Assert.AreEqual("8", numberOfCalls);
+
+            Assert.IsTrue(dictionary.TryGetValue("1061188", out numberOfCalls));
+            Assert.AreEqual("6", numberOfCalls);
         }
 
         [TestMethod]
         public void TestProcessCsvLine()
         {
+            Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
+            string line = "2715941,Curtainly Elegant Ltd,32,9,22,0,5,13.51,27,1649,52";
+
+            AlbanyHouseCsvFileProcessor testFileProcessor = new AlbanyHouseCsvFileProcessor();
+
+            testFileProcessor.ProcessCsvLine(dictionary, line);
+
+            Assert.AreEqual(1, dictionary.Count);
+
+            string numberOfCalls;
+
+            Assert.IsTrue(dictionary.TryGetValue("2715941", out numberOfCalls));
+            Assert.AreEqual("37", numberOfCalls);
+        }
+
+        [TestMethod]
+        public void TestCalculateNumberOfCalls_ShouldCalculateNumberOfCalls()
+        {
+            // Arrange.
+            string[] stringArray =
+            {
+                "3800859",
+                "Lucas Grant Lettings",
+                "39",
+                "9",
+                "31",
+                "8",
+                "1",
+                "0",
+                "94",
+                "2802",
+                "72"
+            };
+
+            AlbanyHouseCsvFileProcessor testFileProcessor = new AlbanyHouseCsvFileProcessor();
+
+            // Act.
+            int numberOfCalls = testFileProcessor.CalculateTotalNumberOfCalls(stringArray);
+
+            // Assert.
+            Assert.AreEqual(40, numberOfCalls);
+        }
+
+        [TestMethod]
+        public void TestCalculateNumberOfCalls_ShouldCatchExceptionAndReturnZero()
+        {
+            // Arrange.
+            string[] stringArray =
+            {
+                "3800859",
+                "Lucas Grant Lettings",
+                "39",
+                "9",
+                "31",
+                "8",
+                "Invalid value not an int",
+                "0",
+                "94",
+                "2802",
+                "72"
+            };
+
+            AlbanyHouseCsvFileProcessor testFileProcessor = new AlbanyHouseCsvFileProcessor();
+
+            int numberOfCalls = -1;
+
+            // Act.
+            numberOfCalls = testFileProcessor.CalculateTotalNumberOfCalls(stringArray);
+
+            // Assert.
+            Assert.AreEqual(0, numberOfCalls);
         }
     }
 }

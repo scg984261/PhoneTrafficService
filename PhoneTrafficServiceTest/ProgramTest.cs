@@ -1,6 +1,6 @@
-﻿using PhoneTrafficService;
+﻿using System.IO;
+using PhoneTrafficService;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.IO;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 
@@ -17,9 +17,11 @@ namespace PhoneTrafficServiceTest
         }
 
         [TestMethod]
-        public void TestMain()
+        public void TestMain_RunModeHudsonHouse()
         {
             Program.PhoneNumbersAllocated = @"Resources\Phone Numbers Allocated.xls";
+            Program.IncomingFileLocation = @"Resources\INCOMING.CSV";
+            Program.ApplicationRunMode = "HUDSON_HOUSE";
 
             Program.Main(new string[0]);
 
@@ -37,14 +39,7 @@ namespace PhoneTrafficServiceTest
 
             string[] expectedContents = this.GetExpectedSpreadsheetFileContents();
 
-            for (int i = 0; i < expectedContents.Length; i++)
-            {
-                IRow row = sheet.GetRow(i);
-
-                string expectedCellContents = expectedContents[i];
-                string spreadsheetValue = row.GetCell(4).StringCellValue;
-                Assert.AreEqual(expectedCellContents, spreadsheetValue);
-            }
+            this.ValidateSheetContents(sheet, expectedContents);
         }
 
         private string[] GetExpectedSpreadsheetFileContents()
@@ -78,11 +73,19 @@ namespace PhoneTrafficServiceTest
             };
         }
 
-        [TestCleanup]
-        public void Cleanup()
+        [TestMethod]
+        public void TestMain_RunModeAlbanyHouse()
         {
+            Program.ApplicationRunMode = "ALBANY_HOUSE";
+            Program.IncomingFileLocation = @"Resources\INCOMING_ALBANY_HOUSE_FORMAT.CSV";
+            Program.PhoneNumbersAllocated = @"Resources\AH Phone Numbers Allocated.xls";
+
+            Program.Main(new string[0]);
+
+            Assert.IsTrue(File.Exists(@"Resources\AH Phone Numbers Allocated.xls"));
+
             HSSFWorkbook testWorkbook;
-            using (FileStream fileStream = new FileStream(@"Resources\Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream(@"Resources\AH Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Read))
             {
                 testWorkbook = new HSSFWorkbook(fileStream);
                 fileStream.Close();
@@ -90,22 +93,78 @@ namespace PhoneTrafficServiceTest
 
             ISheet sheet = testWorkbook.GetSheetAt(0);
 
-            for (int i = 0; i < sheet.LastRowNum; i++)
+            string[] expectedSheetContents =
             {
-                try
-                {
-                    sheet.GetRow(i).GetCell(4).SetCellValue(string.Empty);
-                }
-                catch
-                {
+                "Traffic",
+                "9",
+                "5",
+                "6",
+                "25",
+                "66",
+                "5",
+                "8",
+                "6",
+                "16",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0",
+                "0"
+            };
 
-                }
+            this.ValidateSheetContents(sheet, expectedSheetContents);
+        }
+
+        private void ValidateSheetContents(ISheet sheet, string[] expectedSheetContents)
+        {
+            for (int i = 0; i < expectedSheetContents.Length; i++)
+            {
+                IRow row = sheet.GetRow(i);
+
+                string expectedCellContents = expectedSheetContents[i];
+                string spreadsheetValue = row.GetCell(4).StringCellValue;
+                Assert.AreEqual(expectedCellContents, spreadsheetValue);
             }
+        }
 
-            using (FileStream fileStream = new FileStream(@"Resources\Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Write))
+        [TestCleanup]
+        public void Cleanup()
+        {
+            string[] excelFiles =
             {
-                testWorkbook.Write(fileStream);
-                fileStream.Close();
+                @"Resources\Phone Numbers Allocated.xls",
+                @"Resources\AH Phone Numbers Allocated.xls"
+            };
+
+            foreach (string excelFile in excelFiles)
+            {
+                HSSFWorkbook testWorkbook;
+                using (FileStream fileStream = new FileStream(excelFile, FileMode.Open, FileAccess.Read))
+                {
+                    testWorkbook = new HSSFWorkbook(fileStream);
+                    fileStream.Close();
+                }
+
+                ISheet sheet = testWorkbook.GetSheetAt(0);
+
+                for (int i = 0; i < sheet.LastRowNum; i++)
+                {
+                    try
+                    {
+                        sheet.GetRow(i).GetCell(4).SetCellValue(string.Empty);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                using (FileStream fileStream = new FileStream(excelFile, FileMode.Open, FileAccess.Write))
+                {
+                    testWorkbook.Write(fileStream);
+                    fileStream.Close();
+                }
             }
         }
     }

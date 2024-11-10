@@ -66,7 +66,7 @@ namespace PhoneTrafficService
             }
         }
 
-        public void PopulateIncomingCalls(Dictionary<string, string> incomingCallsDictionary)
+        public void PopulateIncomingCalls(Dictionary<string, string> incomingCallsDictionary, int numberOfDigits)
         {
             for (int currentRowNumber = 1; currentRowNumber <= this.Sheet.LastRowNum; currentRowNumber++)
             {
@@ -78,7 +78,7 @@ namespace PhoneTrafficService
                 }
 
                 ICell cellE = this.Sheet.GetRow(currentRowNumber).CreateCell(4);
-                ddiNumber = this.GetLastTenDigits(ddiNumber);
+                ddiNumber = this.GetLastNCharacters(ddiNumber, numberOfDigits);
                 this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
             }
         }
@@ -114,9 +114,9 @@ namespace PhoneTrafficService
             }
         }
 
-        public string GetLastTenDigits(string str)
+        public string GetLastNCharacters(string str, int number)
         {
-            return str.Substring(Math.Max(0, str.Length - 10));
+            return str.Substring(Math.Max(0, str.Length - number));
         }
 
         public void SaveWorkbook()

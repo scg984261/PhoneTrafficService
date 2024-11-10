@@ -9,6 +9,20 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
     public class HudsonHouseCsvFileProcessorTest
     {
         [TestMethod]
+        public void TestConstructor()
+        {
+            HudsonHouseCsvFileProcessor fileProcessor = new HudsonHouseCsvFileProcessor("Test value.");
+            Assert.AreEqual("Test value.", fileProcessor.IncomingFileLocation);
+        }
+
+        [TestMethod]
+        public void TestConstructor_NoArgs()
+        {
+            HudsonHouseCsvFileProcessor fileProcessor = new HudsonHouseCsvFileProcessor();
+            Assert.AreEqual(string.Empty, fileProcessor.IncomingFileLocation);
+        }
+
+        [TestMethod]
         public void TestPopulateIncomingCalls()
         {
             string[] incomingCallsData =

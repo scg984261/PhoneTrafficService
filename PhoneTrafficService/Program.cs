@@ -18,7 +18,9 @@ namespace PhoneTrafficService
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));
         public static string PhoneNumbersAllocated { get; set; } = ConfigurationManager.AppSettings.Get("PhoneNumbersAllocatedSpreadsheet");
+        public static string IncomingFileLocation { get; set; } = ConfigurationManager.AppSettings.Get("IncomingFilePath");
         public static string ApplicationRunMode { get; set; } = ConfigurationManager.AppSettings.Get("RunMode");
+        public static int LastNCharacters { get; set; } = -1;
         public static ICsvFileProcessor CsvFileProcessor { get; set; }
 
         static Program()
@@ -30,17 +32,15 @@ namespace PhoneTrafficService
         {
             log.Debug($"Determining run mode for application. Value read from configuration: {ApplicationRunMode}.");
 
-            RunMode runMode;
-
             if (ApplicationRunMode == "ALBANY_HOUSE")
             {
-                runMode = RunMode.ALBANY_HOUSE;
-                CsvFileProcessor = new HudsonHouseCsvFileProcessor();
+                CsvFileProcessor = new AlbanyHouseCsvFileProcessor(IncomingFileLocation);
+                LastNCharacters = 7;
             }
             else if (ApplicationRunMode == "HUDSON_HOUSE")
             {
-                runMode = RunMode.HUDSON_HOUSE;
-                CsvFileProcessor = new AlbanyHouseCsvFileProcessor();
+                CsvFileProcessor = new HudsonHouseCsvFileProcessor(IncomingFileLocation);
+                LastNCharacters = 10;
             }
             else
             {
@@ -49,12 +49,13 @@ namespace PhoneTrafficService
                 throw new ConfigurationErrorsException(errorMessage);
             }
 
-            log.Info($"Run mode successfully determined as {runMode}.");
+            log.Info($"Run mode successfully determined as {ApplicationRunMode}. CSV File processor successfully initialised as: {CsvFileProcessor.GetType().FullName}.");
         }
 
         public static void Main(string[] args)
         {
             log.Info("Start of Application.");
+            log.Info($"CSV File Location read from configuration: {IncomingFileLocation}.");
 
             DetermineRunMode();
 
@@ -66,7 +67,7 @@ namespace PhoneTrafficService
 
             SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler(PhoneNumbersAllocated);
             spreadsheetHandler.SetHeader();
-            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary);
+            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary, LastNCharacters);
             spreadsheetHandler.SaveWorkbook();
 
             log.Info("End of program.");

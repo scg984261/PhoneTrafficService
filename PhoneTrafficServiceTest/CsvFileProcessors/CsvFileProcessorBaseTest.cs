@@ -10,17 +10,15 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
         [TestMethod]
         public void TestConstructor_ShouldPopulateIncomingFileLocation()
         {
-            CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase();
-            string testConfigValue = testCsvFileProcessor.IncomingFileLocation;
-            Assert.AreEqual(@"Resources\INCOMING.CSV", testConfigValue);
+            CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase(@"Resources\INCOMING.CSV");
+            Assert.AreEqual(@"Resources\INCOMING.CSV", testCsvFileProcessor.IncomingFileLocation);
         }
 
         [TestMethod]
         public void TestReadLinesFromFile_ShouldReturnLines()
         {
             string filePath = @"Resources\TestFile.csv";
-            CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase();
-            testCsvFileProcessor.IncomingFileLocation = filePath;
+            CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase(filePath);
 
             string[] fileContents = testCsvFileProcessor.ReadLinesFromFile();
 
@@ -36,8 +34,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
         public void TestReadLinesFromFile_ShouldThrowException()
         {
             string filePath = @"InvalidFileNameShouldThrowException.csv";
-            CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase();
-            testCsvFileProcessor.IncomingFileLocation = filePath;
+            CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase(filePath);
 
             testCsvFileProcessor.ReadLinesFromFile();
         }

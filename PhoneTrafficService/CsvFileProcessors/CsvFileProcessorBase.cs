@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using log4net;
@@ -9,11 +8,12 @@ namespace PhoneTrafficService.CsvFileProcessors
     public class CsvFileProcessorBase
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(CsvFileProcessorBase));
-        public string IncomingFileLocation { get; set; } = ConfigurationManager.AppSettings.Get("IncomingFilePath");
+        public string IncomingFileLocation { get; set; }
 
-        public CsvFileProcessorBase()
+        public CsvFileProcessorBase(string incomingFileLocation)
         {
-            log.Info($"Incoming CSV File location read from configuration: {this.IncomingFileLocation}.");
+            log.Info($"Initialising CSV File processor with incoming file location: {incomingFileLocation}.");
+            this.IncomingFileLocation = incomingFileLocation;
         }
 
         public string[] ReadLinesFromFile()

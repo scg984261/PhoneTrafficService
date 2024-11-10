@@ -8,6 +8,14 @@ namespace PhoneTrafficService.CsvFileProcessors
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(HudsonHouseCsvFileProcessor));
 
+        public HudsonHouseCsvFileProcessor() : base(string.Empty)
+        {
+        }
+
+        public HudsonHouseCsvFileProcessor(string incomingFileLocaiton) : base(incomingFileLocaiton)
+        {
+        }
+
         public void PopulateIncomingCalls(Dictionary<string, string> dictionary, string[] lines)
         {
             log.Debug($"Processing CSV lines. {lines.Length} to process.");
