@@ -16,3 +16,5 @@
 /PhoneTrafficServiceTest/bin/Release
 /PhoneTrafficServiceTest/obj/Release
 /publish
+/PhoneTrafficService/PhoneTrafficService.csproj.user
+/PhoneTrafficService/Properties/app.manifest
