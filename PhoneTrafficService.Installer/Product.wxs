@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="PhoneTrafficService.Installer" Language="1033" Version="1.0.0.0" Manufacturer="" UpgradeCode="28d4617c-cd49-46e3-aefe-43c5b03f9245">
+	<Product Id="{A9DF6361-4210-4995-8043-84FD4AA04177}" Name="PhoneTrafficService.Installer" Language="1033" Version="1.0.0.0" Manufacturer="Scott" UpgradeCode="28d4617c-cd49-46e3-aefe-43c5b03f9245">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />

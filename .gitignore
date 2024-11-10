@@ -18,3 +18,9 @@
 /publish
 /PhoneTrafficService/PhoneTrafficService.csproj.user
 /PhoneTrafficService/Properties/app.manifest
+/PhoneTrafficService.Installer/bin/Debug
+/PhoneTrafficService.Installer/obj/Debug/PhoneTrafficService.Installer.wixproj.BindBuiltOutputsFileListnull.txt
+/PhoneTrafficService.Installer/obj/Debug/PhoneTrafficService.Installer.wixproj.BindContentsFileListnull.txt
+/PhoneTrafficService.Installer/obj/Debug/PhoneTrafficService.Installer.wixproj.BindOutputsFileListnull.txt
+/PhoneTrafficService.Installer/obj/Debug/PhoneTrafficService.Installer.wixproj.FileList.txt
+/PhoneTrafficService.Installer/obj/Debug/Product.wixobj
