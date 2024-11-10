@@ -1,30 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="{A9DF6361-4210-4995-8043-84FD4AA04177}" Name="PhoneTrafficService.Installer" Language="1033" Version="1.0.0.0" Manufacturer="Scott" UpgradeCode="28d4617c-cd49-46e3-aefe-43c5b03f9245">
-		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+	<?define ProductCode = "{A9DF6361-4210-4995-8043-84FD4AA04177}"?>
+	<?define BuildVersion = 1.0.0.0?>
+	<?define UpgradeCode = "{F7000421-DF21-4958-A558-F6AACE6EEEAF}"?>
+	
+	<Product Id="$(var.ProductCode)"
+			 Name="!(loc.ProductName)"
+			 Language="!(loc.Language)"
+			 Version="$(var.BuildVersion)"
+			 Manufacturer="!(loc.Manufacturer)"
+			 UpgradeCode="$(var.UpgradeCode)" >
+		
+		<Package InstallerVersion="200"
+			     Compressed="yes"
+			     InstallScope="perMachine"
+			     Manufacturer="!(loc.Manufacturer)"
+				 Description="!(loc.Description)"
+				 Keywords="!(loc.Keywords)"
+				 Comments="!(loc.Comments)"
+				 Languages="!(loc.Language)" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of PhoneTrafficService is already installed." />
+		
+		<!-- Include/embed the cab file in the .msi file. -->
+		<MediaTemplate EmbedCab="yes" />
+
+		<Icon Id="icon.ico" SourceFile="$(var.PhoneTrafficService.ProjectDir)\app.ico" />
+		
+		<!-- Use the icon.ico image for the app. -->
+		<Property Id="APPPRODUCTICON">icon.ico</Property>
+		
+		<!-- Support link -->
+		<Property Id="APPURLINFOABOUT">https://www.albanyhouse.co.uk/</Property>
+		
+		<!-- Use a simple UI for the installer. -->
+		<UIRef Id="WixUI_Minimal" />
 
 		<Feature Id="ProductFeature" Title="PhoneTrafficService.Installer" Level="1">
+			
 			<ComponentGroupRef Id="ProductComponents" />
+			
 		</Feature>
 	</Product>
 
 	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="PhoneTrafficService.Installer" />
-			</Directory>
-		</Directory>
-	</Fragment>
-
-	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
-		</ComponentGroup>
+		
 	</Fragment>
 </Wix>
