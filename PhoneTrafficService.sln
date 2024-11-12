@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneTrafficService", "Phon
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhoneTrafficServiceTest", "PhoneTrafficServiceTest\PhoneTrafficServiceTest.csproj", "{8FCC298C-78D9-4948-8DFE-B7E22B0C2EC4}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PhoneTrafficService.Installer", "PhoneTrafficService.Installer\PhoneTrafficService.Installer.wixproj", "{E56F5098-5B9B-4821-8430-FAACE1D3BDA0}"
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PhoneTrafficServiceInstaller", "PhoneTrafficServiceInstaller\PhoneTrafficServiceInstaller.wixproj", "{E56F5098-5B9B-4821-8430-FAACE1D3BDA0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

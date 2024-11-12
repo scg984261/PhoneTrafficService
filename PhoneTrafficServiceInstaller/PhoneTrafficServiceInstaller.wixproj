@@ -8,6 +8,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <OutputName>PhoneTrafficService.Installer</OutputName>
     <OutputType>Package</OutputType>
+    <Name>PhoneTrafficServiceInstaller</Name>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
