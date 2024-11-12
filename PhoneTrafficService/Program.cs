@@ -7,12 +7,14 @@ using PhoneTrafficService.CsvFileProcessors;
 namespace PhoneTrafficService
 {
 
-    /*
-     * TODO:
-     * 
-     * Different format of INCOMING.csv
+    /**
+     * @TODO:
      * Installer package - how do we get this thing onto the server?
      * MSI Installer?
+     * 
+     * Add Shortcut.
+     * Add Build Version to the MSI Installer
+     * 
      */
     public class Program
     {

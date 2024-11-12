@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-
-	<?define ProductCode = "{A9DF6361-4210-4995-8043-84FD4AA04177}"?>
-	<?define BuildVersion = 1.0.0.0?>
-	<?define UpgradeCode = "{F7000421-DF21-4958-A558-F6AACE6EEEAF}"?>
 	
+	<!-- Product code - this should change with every Release. -->
+	<?define ProductCode = "{117D163E-328C-4BF5-9167-2CF90A823B30}"?>
+	<!-- <?define BuildVersion = 1.0.0.0?> -->
+	
+	<!-- Upgrade code - this should stay the same. -->
+	<?define UpgradeCode = "{ADD06DF3-51C7-4C3D-BF9A-208E423A9B72}"?>
+	
+	<!-- Define simple information about the installer - access values either defined locally here in the Product.wxs or in the localisation file - Common.wxl -->
 	<Product Id="$(var.ProductCode)"
 			 Name="!(loc.ProductName)"
 			 Language="!(loc.Language)"
@@ -20,7 +24,8 @@
 				 Keywords="!(loc.Keywords)"
 				 Comments="!(loc.Comments)"
 				 Languages="!(loc.Language)" />
-
+		
+		<!-- Error message will appear if a higher/newer version of the application is already installed. -->
 		<MajorUpgrade DowngradeErrorMessage="A newer version of PhoneTrafficService is already installed." />
 		
 		<!-- Include/embed the cab file in the .msi file. -->
@@ -29,18 +34,25 @@
 		<Icon Id="icon.ico" SourceFile="$(var.PhoneTrafficService.ProjectDir)\app.ico" />
 		
 		<!-- Use the icon.ico image for the app. -->
-		<Property Id="APPPRODUCTICON">icon.ico</Property>
+		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
 		
 		<!-- Support link -->
-		<Property Id="APPURLINFOABOUT">https://www.albanyhouse.co.uk/</Property>
+		<Property Id="ARPURLINFOABOUT" Value="https://dotnet.microsoft.com/en-us/"/>
 		
 		<!-- Use a simple UI for the installer. -->
 		<UIRef Id="WixUI_Minimal" />
 
-		<Feature Id="ProductFeature" Title="PhoneTrafficService.Installer" Level="1">
-			
-			<ComponentGroupRef Id="ProductComponents" />
-			
+		<WixVariable Id="WixUILicenseRtf" Value="$(var.ProjectDir)\Assets\LicenseText.rtf" />
+		
+		<!--
+		Customise the banner and the background of the installer dialog.
+		<WixVariable Id="WixUIDialogBmp" Value="$(var.ProjectDir)\Assets\Background.bmp" />
+		<WixVariable Id="WixUILBannerBmp" Value="$(var.ProjectDir)\Assets\Banner.bmp" />
+		-->
+
+		<Feature Id="ProductFeature" Title="PhoneTrafficService" Level="1">
+			<!-- <ComponentGroupRef Id="ProductComponents" /> -->
+			<ComponentGroupRef Id="PublishedComponents" />
 		</Feature>
 	</Product>
 

@@ -29,3 +29,9 @@
 /PhoneTrafficService.Installer/obj/Debug/PhoneTrafficService.Installer.wixproj.BindOutputsFileListen-us.txt
 /PhoneTrafficServiceInstaller/bin/Debug/en-us
 /PhoneTrafficServiceInstaller/obj/Debug
+/PhoneTrafficServiceInstaller/obj/Release
+/PhoneTrafficServiceInstaller/bin/Release/en-us
+/PhoneTrafficServiceTest/bin/x86/Release
+/PhoneTrafficServiceTest/obj/x86
+/PhoneTrafficServiceTest/bin/x86/Debug
+/PhoneTrafficServiceInstaller/ComponentsGenerated.wxs
