@@ -9,6 +9,7 @@
     <OutputName>PhoneTrafficService-$(Configuration)-$(Platform)</OutputName>
     <OutputType>Package</OutputType>
     <Name>PhoneTrafficServiceInstaller</Name>
+    <Cultures>;</Cultures>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <OutputPath>bin\$(Configuration)\</OutputPath>
@@ -82,9 +83,7 @@
       PreProcessorVariable="var.BasePath" />
 	</Target>
 
-	    
-  <!-- 
 	<Target Name="AfterBuild">
+		<Exec Command="move bin\$(Configuration)\$(OutputName).msi bin\$(Configuration)\PhoneTrafficService-$(Configuration)-$(Platform)-%(AssemblyVersion.Version).msi"></Exec>
 	</Target>
-  -->
 </Project>
