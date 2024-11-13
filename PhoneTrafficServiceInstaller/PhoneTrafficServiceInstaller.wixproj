@@ -80,7 +80,6 @@
 			ToolPath="$(WixToolPath)"
       RunAsSeparateProcess="true"
       PreProcessorVariable="var.BasePath" />
-
 	</Target>
 
 	    

@@ -2,15 +2,31 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
 		<ComponentGroup Id="ProductComponents">
-			<ComponentRef Id="TestFile" />
+			<ComponentRef Id="MainAppShortcut" />
 		</ComponentGroup>
 		<DirectoryRef Id="INSTALLFOLDER" FileSource="..\PhoneTrafficService\bin\$(var.Platform)\$(var.Configuration)\">
-			
-			<Component Id="TestFile" Guid="{55E79F6B-2F80-470F-81AB-22B18FFC13FF}">
-			<!--	<File Id="FileTestFile" Name="PhoneTrafficService.exe.config" KeyPath="yes" /> -->
-				<RemoveFolder Id="RemoveStartMenu" Directory="InstallProgramMenuFolder" On="uninstall" />
+			<Component Id="MainAppShortcut" Guid="{5A91D46C-D131-4556-81AB-92D2A0DD3D35}">
+				<!-- Shortcut to main application  -->
+				<Shortcut Id="MainAppShortcut"
+						  Name="!(loc.ProductName)"
+						  Target="[INSTALLFOLDER]PhoneNumbersAllocated.exe"
+						  Directory="ProductShortcutDirectory"
+						  WorkingDirectory="INSTALLFOLDER"
+						  Icon="icon.ico">
+				</Shortcut>
+				<RegistryValue
+					Id="RegShortcutKey"
+					Root="HKCU"
+					Key="SOFTWARE\!(loc.ProductNameFolder)"
+					Name="Shortcut"
+					Value="1"
+					Type="integer"
+					KeyPath="yes" />
+				<!--Remove start menu items -->
+				<!-- <RemoveFolder Id="RemoveStartMenu" Directory="ProgramMenuFolder" On="uninstall" /> -->
+				<RemoveFolder Id="RemoveShortcutFolder" Directory="ProductShortcutDirectory" On="uninstall" />
 			</Component>
-			
 		</DirectoryRef>
 	</Fragment>
 </Wix>
+
