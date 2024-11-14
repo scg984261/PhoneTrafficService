@@ -23,8 +23,9 @@
 					Type="integer"
 					KeyPath="yes" />
 				<!--Remove start menu items -->
-				<!-- <RemoveFolder Id="RemoveStartMenu" Directory="ProgramMenuFolder" On="uninstall" /> -->
 				<RemoveFolder Id="RemoveShortcutFolder" Directory="ProductShortcutDirectory" On="uninstall" />
+				<!-- Remove the Logs folder to ensure a clean uninstall. -->
+				<RemoveFolder Id="RemoveLogsFolder" Directory="LogsDirectory" On="uninstall" />
 			</Component>
 		</DirectoryRef>
 	</Fragment>

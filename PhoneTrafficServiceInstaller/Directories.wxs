@@ -7,9 +7,11 @@
 				<Directory Id="ProductShortcutDirectory" Name="!(loc.ProductShortcutFolderName)" />
 			</Directory>
 			
-			<!-- Program Files Folder to install. By default uses 32 bit Program Files. -->
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLFOLDER" Name="!(loc.ProductNameFolder)" />
+			<!-- Location to install the Application -->
+			<Directory Id="INSTALLDRIVE">
+				<Directory Id="INSTALLFOLDER" Name="!(loc.ProductNameFolder)">
+					<Directory Id="LogsDirectory" Name="Logs"/>
+				</Directory>
 			</Directory>
 		</Directory>
 	</Fragment>

@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	
 	<!-- Product code - this should change with every Release. -->
-	<?define ProductCode = "{117D163E-328C-4BF5-9167-2CF90A823B30}"?>
+	<?define ProductCode = ""?>
 	<!-- <?define BuildVersion = 1.0.0.0?> -->
 	
 	<!-- Upgrade code - this should stay the same. -->
@@ -33,12 +33,15 @@
 
 		<Icon Id="icon.ico" SourceFile="$(var.PhoneTrafficService.ProjectDir)\app.ico" />
 		
+		<!-- Set the Drive on which to install the application. -->
+		<Property Id="INSTALLDRIVE" Value="C:\"/>
+
 		<!-- Use the icon.ico image for the app. -->
 		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
 		
 		<!-- Support link -->
 		<Property Id="ARPURLINFOABOUT" Value="https://dotnet.microsoft.com/en-us/"/>
-		
+
 		<!-- Use a simple UI for the installer. -->
 		<UIRef Id="WixUI_Minimal" />
 
