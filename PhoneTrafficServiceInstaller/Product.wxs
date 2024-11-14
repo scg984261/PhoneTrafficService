@@ -2,7 +2,7 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	
 	<!-- Product code - this should change with every Release. -->
-	<?define ProductCode = ""?>
+	<?define ProductCode = "{C5F67CF2-8188-453A-A003-7FAC8AC2BBCC}"?>
 	<!-- <?define BuildVersion = 1.0.0.0?> -->
 	
 	<!-- Upgrade code - this should stay the same. -->
@@ -56,6 +56,7 @@
 		<Feature Id="ProductFeature" Title="PhoneTrafficService" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 			<ComponentGroupRef Id="PublishedComponents" />
+			<ComponentGroupRef Id="ConfigComponents"/>
 		</Feature>
 	</Product>
 

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+	<Fragment>
+		<ComponentGroup Id="ConfigComponents">
+			<Component Id="AppConfigSettings" Guid="{2913A2CA-E946-48F6-B1E7-DC426599103D}" Directory="INSTALLFOLDER">
+				<CreateFolder />
+				<util:XmlFile
+					Id="SetRunMode"
+					Action="setValue"
+					Permanent="yes"
+					File="[INSTALLFOLDER]PhoneTrafficService.exe.config"
+					ElementPath="/configuration/appSettings/add[\[]@key='RunMode'[\]]/@value"
+					Value="[SP_RUNMODE]" >
+				</util:XmlFile>
+
+				<util:XmlFile
+					Id="SetIncomingCsvPath"
+					Action="setValue"
+					Permanent="yes"
+					File="[INSTALLFOLDER]PhoneTrafficService.exe.config"
+					ElementPath="/configuration/appSettings/add[\[]@key='IncomingFilePath'[\]]/@value"
+					Value="[SP_INCOMING_PATH]" >
+				</util:XmlFile>
+
+				<util:XmlFile
+					Id="SetPhoneNumbersAllocated"
+					Action="setValue"
+					Permanent="yes"
+					File="[INSTALLFOLDER]PhoneTrafficService.exe.config"
+					ElementPath="/configuration/appSettings/add[\[]@key='PhoneNumbersAllocatedSpreadsheet'[\]]/@value"
+					Value="[SP_SPREADSHEET_PATH]" >
+				</util:XmlFile>
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
