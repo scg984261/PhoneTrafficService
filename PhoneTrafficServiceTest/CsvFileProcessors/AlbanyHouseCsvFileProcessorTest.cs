@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace PhoneTrafficServiceTest
+namespace PhoneTrafficServiceTest.CsvFileProcessors
 {
     [TestClass]
     public class AlbanyHouseCsvFileProcessorTest
