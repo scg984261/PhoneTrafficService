@@ -50,6 +50,15 @@
       <Name>WixUIExtension</Name>
     </WixExtension>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="RunPhoneTrafficServiceInstaller-AlbanyHouse.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="RunPhoneTrafficServiceInstaller-HudsonHouse.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="UninstallPhoneTrafficService.ps1" />
+  </ItemGroup>
   <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
   <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
@@ -63,6 +72,10 @@
     <GetAssemblyIdentity AssemblyFiles="..\PhoneTrafficService\bin\$(Platform)\$(Configuration)\PhoneTrafficService.exe">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
+    <!-- Delete the installer powershell scripts -->
+    <Exec Command="del bin\$(Configuration)\*.ps1" />
+    <!-- Delete any installer files from previous runs, so we don't accidentally deploy the wrong version. -->
+    <Exec Command="del bin\$(Configuration)\*.msi" />
     <!-- Expose the Assembly file version number as a constant. -->
     <PropertyGroup>
       <DefineConstants>BuildVersion=%(AssemblyVersion.Version);BasePath=..\PhoneTrafficService\bin\$(Platform)\$(Configuration);</DefineConstants>
@@ -72,16 +85,7 @@
   <Target Name="AfterBuild">
     <Exec Command="move bin\$(Configuration)\$(OutputName).msi bin\$(Configuration)\PhoneTrafficService-$(Configuration)-$(Platform)-%(AssemblyVersion.Version).msi">
     </Exec>
-    <!-- Remove unnecessary 'en-us' language directory 
-    <Exec Command="rmdir bin\$(Configuration)\en-us">
-    </Exec>
-    -->
-    <!-- Create the run installer .ps1 powershell scripts -->
-    <!-- Create the Hudson House Installer Script -->
-    <Exec Command='echo msiexec.exe /i PhoneTrafficService-$(Configuration)-$(Platform)-%(AssemblyVersion.Version).msi SP_RUNMODE="HUDSON_HOUSE" SP_INCOMING_PATH="C:\ELEPHANT\HHINCOMING.CSV" SP_SPREADSHEET_PATH=`"C:\PhoneNumbersAllocated\HH Phone Numbers Allocated.xls`" /quiet /passive /norestart &gt; bin\$(Configuration)\RunPhoneTrafficServiceInstaller-HudsonHouse.ps1' >
-    </Exec>
-    <!-- Create the Albany House Installer script -->
-    <Exec Command='echo msiexec.exe /i PhoneTrafficService-$(Configuration)-$(Platform)-%(AssemblyVersion.Version).msi SP_RUNMODE="ALBANY_HOUSE" SP_INCOMING_PATH="C:\ELEPHANT\AHINCOMING.CSV" SP_SPREADSHEET_PATH=`"C:\PhoneNumbersAllocated\AH Phone Numbers Allocated.xls`" /quiet /passive /norestart &gt; bin\$(Configuration)\RunPhoneTrafficServiceInstaller-AlbanyHouse.ps1' >
-    </Exec>
+    <!-- Move the Powershell scripts to install/uninstall the output directory.-->
+    <Exec Command="copy *.ps1 bin\$(Configuration)" />
   </Target>
 </Project>
