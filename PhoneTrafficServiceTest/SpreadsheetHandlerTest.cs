@@ -144,7 +144,6 @@ namespace PhoneTrafficServiceTest
         public void TestPopulateincomingCalls_ShouldPopulateIncomingCalls_AlbanyHouseFormat()
         {
             // Arrange.
-
             string[] testSpreadSheetValues =
              {
                 "DDI Number",
