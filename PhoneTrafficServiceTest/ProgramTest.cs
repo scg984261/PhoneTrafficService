@@ -1,8 +1,10 @@
 ﻿using System.IO;
+using System.Configuration;
 using PhoneTrafficService;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
+using PhoneTrafficService.CsvFileProcessors;
 
 namespace PhoneTrafficServiceTest
 {
@@ -14,6 +16,58 @@ namespace PhoneTrafficServiceTest
         {
             string testConfigValue = Program.PhoneNumbersAllocated;
             Assert.AreEqual("Test Spreadsheet File Location", testConfigValue);
+        }
+
+        [TestMethod]
+        public void TestDetermineRunMode_ShouldBeAlbanyHouse()
+        {
+            // Arrange.
+            // Simulate reading the application run mode from configuration.
+            Program.ApplicationRunMode = "ALBANY_HOUSE";
+
+            // Simulate reading the location of INCOMING.CSV from configuration.
+            Program.IncomingFileLocation = "C:\\Test\\Incoming\\File\\Location\\AlbanyHouse";
+
+            // Act.
+            Program.DetermineRunMode();
+
+            // Assert.
+            Assert.IsTrue(Program.CsvFileProcessor is AlbanyHouseCsvFileProcessor);
+            AlbanyHouseCsvFileProcessor fileProcessor = (AlbanyHouseCsvFileProcessor) Program.CsvFileProcessor;
+            Assert.AreEqual("C:\\Test\\Incoming\\File\\Location\\AlbanyHouse", fileProcessor.IncomingFileLocation);
+            Assert.AreEqual(7, Program.LastNCharacters);
+        }
+
+        [TestMethod]
+        public void TestDetermineRunMode_ShouldBeHudsonHouse()
+        {
+            // Arrange.
+            // Simulate reading the application run mode from configuration.
+            Program.ApplicationRunMode = "HUDSON_HOUSE";
+
+            // Simulate reading the location of INCOMING.CSV from configuration.
+            Program.IncomingFileLocation = "C:\\Test\\Incoming\\File\\Location\\HudsonHouse";
+
+            // Act.
+            Program.DetermineRunMode();
+
+            // Assert.
+            Assert.IsTrue(Program.CsvFileProcessor is HudsonHouseCsvFileProcessor);
+            HudsonHouseCsvFileProcessor fileProcessor = (HudsonHouseCsvFileProcessor) Program.CsvFileProcessor;
+            Assert.AreEqual("C:\\Test\\Incoming\\File\\Location\\HudsonHouse", fileProcessor.IncomingFileLocation);
+            Assert.AreEqual(10, Program.LastNCharacters);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ConfigurationErrorsException))]
+        public void TestDetermineRunMode_ShouldThrowException()
+        {
+            // Arrange.
+            Program.ApplicationRunMode = "INVALID_RUN_MODE";
+            Program.IncomingFileLocation = "C:\\Test\\Incoming\\File\\Location\\HudsonHouse";
+
+            // Act.
+            Program.DetermineRunMode();
         }
 
         [TestMethod]
