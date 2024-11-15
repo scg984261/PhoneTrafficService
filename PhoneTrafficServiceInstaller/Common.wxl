@@ -4,7 +4,7 @@
 	<String Id="ProductShortcutFolderName">PhoneTrafficServiceShortcut</String>
 	<String Id="ProductName">PhoneTrafficService</String>
 	<String Id="Language">1033</String>
-	<String Id="Manufacturer">Scott</String>
+	<String Id="Manufacturer">Scott Gillen</String>
 	<String Id="Description">.NET Framework application to automate population of number of calls column in PhoneNumbersAllocated.</String>
 	<String Id="Keywords">.NET,Spreadsheets,Automation</String>
 	<String Id="Comments">Application can be run from the command line, or automated to run on a schedule using Task Scheduler.</String>

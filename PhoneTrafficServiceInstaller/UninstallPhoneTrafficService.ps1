@@ -1,5 +1,5 @@
 ﻿# Uninstall PhoneTrafficService
-msiexec.exe /x PhoneTrafficService-Debug-x86-2.0.0.8.msi /quiet /passive /norestart
+msiexec.exe /x PhoneTrafficService-Debug-x86-1.0.0.0.msi /quiet /passive /norestart
 
 # Delete the scheduled task
 Unregister-ScheduledTask -TaskName "PhoneTrafficService" -Confirm:$false
