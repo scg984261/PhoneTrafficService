@@ -9,7 +9,7 @@
 				<!-- Shortcut to main application  -->
 				<Shortcut Id="MainAppShortcut"
 						  Name="!(loc.ProductName)"
-						  Target="[INSTALLFOLDER]PhoneNumbersAllocated.exe"
+						  Target="[INSTALLFOLDER]PhoneTrafficService.exe"
 						  Directory="ProductShortcutDirectory"
 						  WorkingDirectory="INSTALLFOLDER"
 						  Icon="icon.ico">
