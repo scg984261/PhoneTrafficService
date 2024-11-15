@@ -104,7 +104,7 @@ namespace PhoneTrafficService
 
             if (dictionary.TryGetValue(ddiNumber, out numberOfCalls))
             {
-                log.Debug($"Setting traffic column of row number: {cell.Row.RowNum + 1} to: {numberOfCalls}.");
+                log.Debug($"Match found for DDI Number: {ddiNumber}. Setting traffic column of row number: {cell.Row.RowNum + 1} to: {numberOfCalls}.");
                 cell.SetCellValue(numberOfCalls);
             }
             else
