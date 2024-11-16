@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WixLocalization Culture="en-us" xmlns="http://schemas.microsoft.com/wix/2006/localization">
+	<String Id="ProductNameFolder">PhoneTrafficService</String>
+	<String Id="ProductShortcutFolderName">PhoneTrafficServiceShortcut</String>
+	<String Id="ProductName">PhoneTrafficService</String>
+	<String Id="Language">1033</String>
+	<String Id="Manufacturer">Scott Gillen</String>
+	<String Id="Description">.NET Framework application to automate population of number of calls column in PhoneNumbersAllocated.</String>
+	<String Id="Keywords">.NET,Spreadsheets,Automation</String>
+	<String Id="Comments">Application can be run from the command line, or automated to run on a schedule using Task Scheduler.</String>
+</WixLocalization>

@@ -83,7 +83,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
         }
 
         [TestMethod]
-        public void TestParseCsvLine_ShouldAddToDictionary()
+        public void TestProcessCsvLine_ShouldAddToDictionary()
         {
             Dictionary<string, string> incomingCalls = new Dictionary<string, string>();
 
@@ -103,7 +103,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
         }
 
         [TestMethod]
-        public void TestParseCsvLine_NumberOfCallsNotInt_ShouldAddZeroAsPlaceholder()
+        public void TestProcessCsvLine_NumberOfCallsNotInt_ShouldAddZeroAsPlaceholder()
         {
             Dictionary<string, string> incomingCalls = new Dictionary<string, string>();
 
@@ -124,7 +124,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
 
         [TestMethod]
         [ExpectedException(typeof(IndexOutOfRangeException))]
-        public void TestParseCsvLine_ShouldThrowOutOfBoundsException()
+        public void TestProcessCsvLine_ShouldThrowOutOfBoundsException()
         {
             string line = "1218096874";
             HudsonHouseCsvFileProcessor testCsvFileProcessor = new HudsonHouseCsvFileProcessor();

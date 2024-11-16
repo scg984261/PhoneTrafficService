@@ -2,7 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 
-namespace PhoneTrafficServiceTest
+namespace PhoneTrafficServiceTest.CsvFileProcessors
 {
     [TestClass]
     public class AlbanyHouseCsvFileProcessorTest
@@ -134,14 +134,17 @@ namespace PhoneTrafficServiceTest
         [TestMethod]
         public void TestProcessCsvLine()
         {
+            // Arrange.
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
 
             string line = "2715941,Curtainly Elegant Ltd,32,9,22,0,5,13.51,27,1649,52";
 
             AlbanyHouseCsvFileProcessor testFileProcessor = new AlbanyHouseCsvFileProcessor();
 
+            // Act.
             testFileProcessor.ProcessCsvLine(dictionary, line);
 
+            // Assert.
             Assert.AreEqual(1, dictionary.Count);
 
             string numberOfCalls;

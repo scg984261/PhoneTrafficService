@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<!-- Start Menu. -->
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ProductShortcutDirectory" Name="!(loc.ProductShortcutFolderName)" />
+			</Directory>
+			
+			<!-- Location to install the Application -->
+			<Directory Id="INSTALLDRIVE">
+				<Directory Id="INSTALLFOLDER" Name="!(loc.ProductNameFolder)">
+					<Directory Id="LogsDirectory" Name="Logs"/>
+				</Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+</Wix>
