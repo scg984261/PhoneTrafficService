@@ -6,16 +6,9 @@ using PhoneTrafficService.CsvFileProcessors;
 
 namespace PhoneTrafficService
 {
-
-    /**
-     * @TODO:
-     * Installer package - how do we get this thing onto the server?
-     * MSI Installer?
-     * 
-     * Add Shortcut.
-     * Add Build Version to the MSI Installer
-     * 
-     */
+   /// <summary>
+   /// Class containing <c>Main</c> method, which is the main entry point of the application.
+   /// </summary>
     public class Program
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));
@@ -30,6 +23,12 @@ namespace PhoneTrafficService
             XmlConfigurator.Configure();
         }
 
+        /// <summary>
+        /// Determines the run mode of the application to decide which CSV file processor logic to use. <br />
+        /// Also decides how many 'last characters' to use when attempting to match DDI numbers from the<br />
+        /// CSV file to those in Phone Numbers Allocated
+        /// </summary>
+        /// <exception cref="ConfigurationErrorsException"></exception>
         public static void DetermineRunMode()
         {
             log.Debug($"Determining run mode for application. Value read from configuration: {ApplicationRunMode}.");
@@ -54,6 +53,10 @@ namespace PhoneTrafficService
             log.Info($"Run mode successfully determined as {ApplicationRunMode}. CSV File processor successfully initialised as: {CsvFileProcessor.GetType().FullName}.");
         }
 
+        /// <summary>
+        /// Main entry point of application.
+        /// </summary>
+        /// <param name="args"></param>
         public static void Main(string[] args)
         {
             log.Info("Start of Application.");

@@ -121,24 +121,23 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual("0", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(5).GetCell(4).StringCellValue);
         }
 
-        private HSSFWorkbook CreateTestWorkbook(string[] testSpreadSheetColumnAValues)
+        private HSSFWorkbook CreateTestWorkbook(string[] testSpreadSheetValues)
         {
             HSSFWorkbook workbook = new HSSFWorkbook();
 
             ISheet sheet = workbook.CreateSheet();
 
-            for (int i = 0; i < 6; i++)
+            for (int i = 0; i < testSpreadSheetValues.Length; i++)
             {
                 IRow row = sheet.CreateRow(i);
                 row.CreateCell(0);
-                row.CreateCell(1).SetCellValue(testSpreadSheetColumnAValues[i]);
+                row.CreateCell(1).SetCellValue(testSpreadSheetValues[i]);
                 row.CreateCell(2);
                 row.CreateCell(3);
             }
 
             return workbook;
         }
-
         
         [TestMethod]
         public void TestPopulateincomingCalls_ShouldPopulateIncomingCalls_AlbanyHouseFormat()
