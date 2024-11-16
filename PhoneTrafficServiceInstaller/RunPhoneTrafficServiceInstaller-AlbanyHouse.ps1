@@ -1,5 +1,5 @@
 ﻿# Run the MSI Installer script.
-msiexec.exe /i PhoneTrafficService-Debug-x86-1.0.0.0.msi SP_RUNMODE="ALBANY_HOUSE" SP_INCOMING_PATH="C:\ELEPHANT\AHINCOMING.CSV" SP_SPREADSHEET_PATH=`"C:\PhoneNumbersAllocated\AH Phone Numbers Allocated.xls`" /quiet /passive /norestart
+msiexec.exe /i PhoneTrafficService-Debug-x86-1.0.0.1.msi SP_RUNMODE="ALBANY_HOUSE" SP_INCOMING_PATH="C:\ELEPHANT\AHINCOMING.CSV" SP_SPREADSHEET_PATH=`"C:\PhoneNumbersAllocated\AH Phone Numbers Allocated.xls`" /quiet /passive /norestart
 
 # Create the Scheduled Task to run automatically.
 $Action = New-ScheduledTaskAction -Execute "C:\PhoneTrafficService\PhoneTrafficService.exe" -
