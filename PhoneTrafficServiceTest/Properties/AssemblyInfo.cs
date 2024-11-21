@@ -1,5 +1,4 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("PhoneTrafficServiceTest")]
@@ -13,7 +12,7 @@ using System.Runtime.InteropServices;
 
 [assembly: ComVisible(false)]
 
-[assembly: Guid("8fcc298c-78d9-4948-8dfe-b7e22b0c2ec4")]
+[assembly: Guid("4b75b5f5-6458-49a2-b162-5ba2e2327d16")]
 
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]

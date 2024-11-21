@@ -1,37 +1,44 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using PhoneTrafficService;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PhoneTrafficServiceTest
 {
-    [TestClass]
     public class SpreadsheetHandlerTest
     {
-        [TestMethod]
+        private static readonly string testDirectory = TestContext.CurrentContext.TestDirectory;
+
+        [Test]
         public void TestConstructor()
         {
-            string filePath = @"Resources\Phone Numbers Allocated.xls";
+            string filePath = $@"{testDirectory}\Resources\Phone Numbers Allocated.xls";
             SpreadsheetHandler testHandler = new SpreadsheetHandler(filePath);
 
-            Assert.AreEqual("Resources\\Phone Numbers Allocated.xls", testHandler.FilePath);
+            string[] stringArray = testHandler.FilePath.Split('\\');
+            string fileName = stringArray.Last();
+            string folderName = stringArray.Reverse().Skip(1).First();
+
+            Assert.AreEqual("Phone Numbers Allocated.xls", fileName);
+            Assert.AreEqual("Resources", folderName);
+
             Assert.AreEqual(3, testHandler.Workbook.NumberOfSheets);
 
             Assert.AreEqual(24, testHandler.Sheet.LastRowNum);
             Assert.AreEqual("Sheet1", testHandler.Sheet.SheetName);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(FileNotFoundException))]
+        [Test]
         public void TestConstructior_ShouldCatchFileNotFoundException()
         {
-            string filePath = @"Resources\Invalid File Name.xls";
-            new SpreadsheetHandler(filePath);
+            string filePath = $@"{testDirectory}\Resources\Invalid File Name.xls";
+            Assert.That(() => new SpreadsheetHandler(filePath), Throws.Exception.TypeOf<FileNotFoundException>());
         }
 
-        [TestMethod]
+        [Test]
         public void TestSetHeader_ShouldSetHeader()
         {
             // Arrange.
@@ -59,7 +66,7 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual("Traffic", trafficHeaderCell.StringCellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void TestSetHeader_ShouldCatchException()
         {
             // Arrange.
@@ -83,7 +90,7 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual(3, spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(0).LastCellNum);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPopulateIncomingCalls_ShouldPopulateIncomingCalls_HudsonHouseFormat()
         {
             // Arrange.
@@ -138,8 +145,8 @@ namespace PhoneTrafficServiceTest
 
             return workbook;
         }
-        
-        [TestMethod]
+
+        [Test]
         public void TestPopulateincomingCalls_ShouldPopulateIncomingCalls_AlbanyHouseFormat()
         {
             // Arrange.
@@ -177,7 +184,7 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual("0", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(5).GetCell(4).StringCellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void TestGetDdiNumberFromRow_ShouldReturnDdiNumber()
         {
             // Arrange.
@@ -196,7 +203,7 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual("013169730324", ddiNumber);
         }
 
-        [TestMethod]
+        [Test]
         public void TestGetDdiNumberFromRow_ShouldCatchExceptionAndReturnEmptyString()
         {
             // Arrange.
@@ -214,7 +221,7 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual(string.Empty, ddiNumber);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPopulateTraffic_ShouldPopulateCellWithIncomingCalls()
         {
             // Arrange.
@@ -242,7 +249,7 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual("38425", cell.StringCellValue);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPopulateTraffic_ShouldPopulateCellWithPlaceHolderValue()
         {
             // Arrange.
@@ -270,15 +277,15 @@ namespace PhoneTrafficServiceTest
             Assert.AreEqual("0", cell.StringCellValue);
         }
 
-        [TestMethod]
-        [DataRow("ABCDEFGHIJ0123456789", "0123456789", 10)]
-        [DataRow("58432165974139874651268458", "4651268458", 10)]
-        [DataRow("ABCDFGG!\"£$^&1236845", "$^&1236845", 10)]
-        [DataRow("123", "123", 10)]
-        [DataRow("ABCDEF", "ABCDEF", 10)]
-        [DataRow("08425987316", "5987316", 7)]
-        [DataRow("12389498745", "9498745", 7)]
-        [DataRow("59742568946", "2568946", 7)]
+        [Test]
+        [TestCase("ABCDEFGHIJ0123456789", "0123456789", 10)]
+        [TestCase("58432165974139874651268458", "4651268458", 10)]
+        [TestCase("ABCDFGG!\"£$^&1236845", "$^&1236845", 10)]
+        [TestCase("123", "123", 10)]
+        [TestCase("ABCDEF", "ABCDEF", 10)]
+        [TestCase("08425987316", "5987316", 7)]
+        [TestCase("12389498745", "9498745", 7)]
+        [TestCase("59742568946", "2568946", 7)]
         public void TestGetLastNCharacters_ShouldReturnLastNCharacters(string testString, string expected, int numberOfCharacters)
         {
             // Arrange.

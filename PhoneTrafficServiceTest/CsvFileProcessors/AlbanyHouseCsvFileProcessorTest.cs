@@ -1,27 +1,26 @@
 ﻿using PhoneTrafficService.CsvFileProcessors;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using System.Collections.Generic;
 
 namespace PhoneTrafficServiceTest.CsvFileProcessors
 {
-    [TestClass]
     public class AlbanyHouseCsvFileProcessorTest
     {
-        [TestMethod]
+        [Test]
         public void TestConstructor()
         {
             AlbanyHouseCsvFileProcessor fileProcessor = new AlbanyHouseCsvFileProcessor("Test value.");
             Assert.AreEqual("Test value.", fileProcessor.IncomingFileLocation);
         }
 
-        [TestMethod]
+        [Test]
         public void TestConstructor_NoArgs()
         {
             AlbanyHouseCsvFileProcessor fileProcessor = new AlbanyHouseCsvFileProcessor();
             Assert.AreEqual(string.Empty, fileProcessor.IncomingFileLocation);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPopulateIncomingCalls_DdiNumberHasInvertedCommas()
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -78,8 +77,8 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.IsTrue(dictionary.TryGetValue("2703702", out numberOfCalls));
             Assert.AreEqual("54", numberOfCalls);
         }
-        
-        [TestMethod]
+
+        [Test]
         public void TestPopulateIncomingCalls_DdiNumberDoesNotHaveInvertedCommas()
         {
             Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -131,7 +130,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual("6", numberOfCalls);
         }
 
-        [TestMethod]
+        [Test]
         public void TestProcessCsvLine()
         {
             // Arrange.
@@ -153,7 +152,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual("37", numberOfCalls);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCalculateNumberOfCalls_ShouldCalculateNumberOfCalls()
         {
             // Arrange.
@@ -181,7 +180,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual(40, numberOfCalls);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCalculateNumberOfCalls_ShouldCatchExceptionAndReturnZero()
         {
             // Arrange.

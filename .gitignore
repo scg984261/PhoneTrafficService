@@ -37,3 +37,4 @@
 /PhoneTrafficServiceInstaller/ComponentsGenerated.wxs
 /PhoneTrafficServiceInstaller/bin/Debug
 /.vs
+/PhoneTrafficServiceTest/.vs
