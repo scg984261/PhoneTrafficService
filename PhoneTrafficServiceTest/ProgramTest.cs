@@ -1,24 +1,26 @@
-﻿using System.IO;
+﻿using NUnit.Framework;
 using System.Configuration;
+using System.IO;
 using PhoneTrafficService;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PhoneTrafficService.CsvFileProcessors;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
-using PhoneTrafficService.CsvFileProcessors;
+
 
 namespace PhoneTrafficServiceTest
 {
-    [TestClass]
     public class ProgramTest
     {
-        [TestMethod]
+        private static readonly string testDirectory = TestContext.CurrentContext.TestDirectory;
+
+        [Test]
         public void TestGetPhoneNumbersAllocatedSpreadsheetFileLocation_ShouldReturnValue()
         {
             string testConfigValue = Program.PhoneNumbersAllocated;
             Assert.AreEqual("Test Spreadsheet File Location", testConfigValue);
         }
 
-        [TestMethod]
+        [Test]
         public void TestDetermineRunMode_ShouldBeAlbanyHouse()
         {
             // Arrange.
@@ -33,12 +35,12 @@ namespace PhoneTrafficServiceTest
 
             // Assert.
             Assert.IsTrue(Program.CsvFileProcessor is AlbanyHouseCsvFileProcessor);
-            AlbanyHouseCsvFileProcessor fileProcessor = (AlbanyHouseCsvFileProcessor) Program.CsvFileProcessor;
+            AlbanyHouseCsvFileProcessor fileProcessor = (AlbanyHouseCsvFileProcessor)Program.CsvFileProcessor;
             Assert.AreEqual("C:\\Test\\Incoming\\File\\Location\\AlbanyHouse", fileProcessor.IncomingFileLocation);
             Assert.AreEqual(7, Program.LastNCharacters);
         }
 
-        [TestMethod]
+        [Test]
         public void TestDetermineRunMode_ShouldBeHudsonHouse()
         {
             // Arrange.
@@ -53,13 +55,12 @@ namespace PhoneTrafficServiceTest
 
             // Assert.
             Assert.IsTrue(Program.CsvFileProcessor is HudsonHouseCsvFileProcessor);
-            HudsonHouseCsvFileProcessor fileProcessor = (HudsonHouseCsvFileProcessor) Program.CsvFileProcessor;
+            HudsonHouseCsvFileProcessor fileProcessor = (HudsonHouseCsvFileProcessor)Program.CsvFileProcessor;
             Assert.AreEqual("C:\\Test\\Incoming\\File\\Location\\HudsonHouse", fileProcessor.IncomingFileLocation);
             Assert.AreEqual(10, Program.LastNCharacters);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(ConfigurationErrorsException))]
+        [Test]
         public void TestDetermineRunMode_ShouldThrowException()
         {
             // Arrange.
@@ -67,23 +68,23 @@ namespace PhoneTrafficServiceTest
             Program.IncomingFileLocation = "C:\\Test\\Incoming\\File\\Location\\HudsonHouse";
 
             // Act.
-            Program.DetermineRunMode();
+            Assert.That(() => Program.DetermineRunMode(), Throws.Exception.TypeOf<ConfigurationErrorsException>());
         }
 
-        [TestMethod]
+        [Test]
         public void TestMain_RunModeHudsonHouse()
         {
-            Program.PhoneNumbersAllocated = @"Resources\Phone Numbers Allocated.xls";
-            Program.IncomingFileLocation = @"Resources\INCOMING.CSV";
+            Program.PhoneNumbersAllocated = $@"{testDirectory}\Resources\Phone Numbers Allocated.xls";
+            Program.IncomingFileLocation = $@"{testDirectory}\Resources\INCOMING.CSV";
             Program.ApplicationRunMode = "HUDSON_HOUSE";
 
             Program.Main(new string[0]);
 
-            Assert.IsTrue(File.Exists(@"Resources\Phone Numbers Allocated.xls"));
+            Assert.IsTrue(File.Exists($@"{testDirectory}\Resources\Phone Numbers Allocated.xls"));
 
             // Assert that the contents of the spreadsheet are correct.
             HSSFWorkbook testWorkbook;
-            using (FileStream fileStream = new FileStream(@"Resources\Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream($@"{testDirectory}\Resources\Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Read))
             {
                 testWorkbook = new HSSFWorkbook(fileStream);
                 fileStream.Close();
@@ -127,19 +128,19 @@ namespace PhoneTrafficServiceTest
             };
         }
 
-        [TestMethod]
+        [Test]
         public void TestMain_RunModeAlbanyHouse()
         {
             Program.ApplicationRunMode = "ALBANY_HOUSE";
-            Program.IncomingFileLocation = @"Resources\INCOMING_ALBANY_HOUSE_FORMAT.CSV";
-            Program.PhoneNumbersAllocated = @"Resources\AH Phone Numbers Allocated.xls";
+            Program.IncomingFileLocation = $@"{testDirectory}\Resources\INCOMING_ALBANY_HOUSE_FORMAT.CSV";
+            Program.PhoneNumbersAllocated = $@"{testDirectory}\Resources\AH Phone Numbers Allocated.xls";
 
             Program.Main(new string[0]);
 
-            Assert.IsTrue(File.Exists(@"Resources\AH Phone Numbers Allocated.xls"));
+            Assert.IsTrue(File.Exists($@"{testDirectory}\Resources\AH Phone Numbers Allocated.xls"));
 
             HSSFWorkbook testWorkbook;
-            using (FileStream fileStream = new FileStream(@"Resources\AH Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Read))
+            using (FileStream fileStream = new FileStream($@"{testDirectory}\Resources\AH Phone Numbers Allocated.xls", FileMode.Open, FileAccess.Read))
             {
                 testWorkbook = new HSSFWorkbook(fileStream);
                 fileStream.Close();
@@ -182,13 +183,13 @@ namespace PhoneTrafficServiceTest
             }
         }
 
-        [TestCleanup]
+        [TearDown]
         public void Cleanup()
         {
             string[] excelFiles =
             {
-                @"Resources\Phone Numbers Allocated.xls",
-                @"Resources\AH Phone Numbers Allocated.xls"
+                $@"{testDirectory}\Resources\Phone Numbers Allocated.xls",
+                $@"{testDirectory}\Resources\AH Phone Numbers Allocated.xls"
             };
 
             foreach (string excelFile in excelFiles)

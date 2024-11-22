@@ -6,9 +6,9 @@ using PhoneTrafficService.CsvFileProcessors;
 
 namespace PhoneTrafficService
 {
-   /// <summary>
-   /// Class containing <c>Main</c> method, which is the main entry point of the application.
-   /// </summary>
+    /// <summary>
+    /// Class containing <c>Main</c> method, which is the main entry point of the application.
+    /// </summary>
     public class Program
     {
         private static readonly ILog log = LogManager.GetLogger(typeof(Program));

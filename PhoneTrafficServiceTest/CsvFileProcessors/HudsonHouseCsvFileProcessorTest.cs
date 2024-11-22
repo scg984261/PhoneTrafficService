@@ -1,28 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using PhoneTrafficService.CsvFileProcessors;
 
 namespace PhoneTrafficServiceTest.CsvFileProcessors
 {
-    [TestClass]
     public class HudsonHouseCsvFileProcessorTest
     {
-        [TestMethod]
+        [Test]
         public void TestConstructor()
         {
             HudsonHouseCsvFileProcessor fileProcessor = new HudsonHouseCsvFileProcessor("Test value.");
             Assert.AreEqual("Test value.", fileProcessor.IncomingFileLocation);
         }
 
-        [TestMethod]
+        [Test]
         public void TestConstructor_NoArgs()
         {
             HudsonHouseCsvFileProcessor fileProcessor = new HudsonHouseCsvFileProcessor();
             Assert.AreEqual(string.Empty, fileProcessor.IncomingFileLocation);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPopulateIncomingCalls()
         {
             string[] incomingCallsData =
@@ -56,7 +55,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual("42", numberOfCalls);
         }
 
-        [TestMethod]
+        [Test]
         public void TestPopulateIncomingCalls_ShouldCatchException()
         {
             string[] incomingCallsData =
@@ -82,7 +81,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.IsNull(numberOfCalls);
         }
 
-        [TestMethod]
+        [Test]
         public void TestProcessCsvLine_ShouldAddToDictionary()
         {
             Dictionary<string, string> incomingCalls = new Dictionary<string, string>();
@@ -102,7 +101,7 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual("300", numberOfCalls);
         }
 
-        [TestMethod]
+        [Test]
         public void TestProcessCsvLine_NumberOfCallsNotInt_ShouldAddZeroAsPlaceholder()
         {
             Dictionary<string, string> incomingCalls = new Dictionary<string, string>();
@@ -122,13 +121,12 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual("0", numberOfCalls);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(IndexOutOfRangeException))]
+        [Test]
         public void TestProcessCsvLine_ShouldThrowOutOfBoundsException()
         {
             string line = "1218096874";
             HudsonHouseCsvFileProcessor testCsvFileProcessor = new HudsonHouseCsvFileProcessor();
-            testCsvFileProcessor.ProcessCsvLine(new Dictionary<string, string>(), line);
+            Assert.That(() => testCsvFileProcessor.ProcessCsvLine(new Dictionary<string, string>(), line), Throws.Exception.TypeOf<IndexOutOfRangeException>());
         }
     }
 }

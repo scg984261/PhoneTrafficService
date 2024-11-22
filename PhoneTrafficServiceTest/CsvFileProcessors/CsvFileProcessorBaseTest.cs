@@ -1,23 +1,24 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using NUnit.Framework;
 using PhoneTrafficService.CsvFileProcessors;
 using System.IO;
 
 namespace PhoneTrafficServiceTest.CsvFileProcessors
 {
-    [TestClass]
     public class CsvFileProcessorBaseTest
     {
-        [TestMethod]
+        private static readonly string testDirectory = TestContext.CurrentContext.TestDirectory;
+
+        [Test]
         public void TestConstructor_ShouldPopulateIncomingFileLocation()
         {
             CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase(@"Resources\INCOMING.CSV");
             Assert.AreEqual(@"Resources\INCOMING.CSV", testCsvFileProcessor.IncomingFileLocation);
         }
 
-        [TestMethod]
+        [Test]
         public void TestReadLinesFromFile_ShouldReturnLines()
         {
-            string filePath = @"Resources\TestFile.csv";
+            string filePath = $@"{testDirectory}\Resources\TestFile.csv";
             CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase(filePath);
 
             string[] fileContents = testCsvFileProcessor.ReadLinesFromFile();
@@ -29,14 +30,13 @@ namespace PhoneTrafficServiceTest.CsvFileProcessors
             Assert.AreEqual("1156719835,42,24/04/2024 08:59,22/07/2024 09:31", fileContents[2]);
         }
 
-        [TestMethod]
-        [ExpectedException(typeof(FileNotFoundException))]
+        [Test]
         public void TestReadLinesFromFile_ShouldThrowException()
         {
             string filePath = @"InvalidFileNameShouldThrowException.csv";
             CsvFileProcessorBase testCsvFileProcessor = new CsvFileProcessorBase(filePath);
 
-            testCsvFileProcessor.ReadLinesFromFile();
+            Assert.That(() => testCsvFileProcessor.ReadLinesFromFile(), Throws.Exception.TypeOf<FileNotFoundException>());
         }
     }
 }
