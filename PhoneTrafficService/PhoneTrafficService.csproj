@@ -58,13 +58,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpreadsheetFileHandlers\AlbanyHouseSpreadsheetHandler.cs" />
     <Compile Include="CsvFileProcessors\AlbanyHouseCsvFileProcessor.cs" />
     <Compile Include="CsvFileProcessors\CsvFileProcessorBase.cs" />
     <Compile Include="CsvFileProcessors\HudsonHouseCsvFileProcessor.cs" />
     <Compile Include="CsvFileProcessors\ICsvFileProcessor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpreadsheetHandler.cs" />
+    <Compile Include="SpreadsheetFileHandlers\DefaultSpreadsheetHandler.cs" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

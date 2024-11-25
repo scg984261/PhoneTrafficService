@@ -1,14 +1,15 @@
 ﻿using NUnit.Framework;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
-using PhoneTrafficService;
+using PhoneTrafficService.SpreadsheetFileHandlers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using PhoneTrafficServiceTest.SpreadsheetFileHandlers;
 
 namespace PhoneTrafficServiceTest
 {
-    public class SpreadsheetHandlerTest
+    public class DefaultSpreadsheetHandlerTest
     {
         private static readonly string testDirectory = TestContext.CurrentContext.TestDirectory;
 
@@ -16,7 +17,7 @@ namespace PhoneTrafficServiceTest
         public void TestConstructor()
         {
             string filePath = $@"{testDirectory}\Resources\Phone Numbers Allocated.xls";
-            SpreadsheetHandler testHandler = new SpreadsheetHandler(filePath);
+            DefaultSpreadsheetHandler testHandler = new DefaultSpreadsheetHandler(filePath);
 
             string[] stringArray = testHandler.FilePath.Split('\\');
             string fileName = stringArray.Last();
@@ -35,7 +36,7 @@ namespace PhoneTrafficServiceTest
         public void TestConstructior_ShouldCatchFileNotFoundException()
         {
             string filePath = $@"{testDirectory}\Resources\Invalid File Name.xls";
-            Assert.That(() => new SpreadsheetHandler(filePath), Throws.Exception.TypeOf<FileNotFoundException>());
+            Assert.That(() => new DefaultSpreadsheetHandler(filePath), Throws.Exception.TypeOf<FileNotFoundException>());
         }
 
         [Test]
@@ -54,7 +55,7 @@ namespace PhoneTrafficServiceTest
             row.CreateCell(3);
             row.CreateCell(4);
 
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheetHandler = new DefaultSpreadsheetHandler();
             spreadsheetHandler.Workbook = workbook;
             spreadsheetHandler.Sheet = workbook.GetSheetAt(0);
 
@@ -77,7 +78,7 @@ namespace PhoneTrafficServiceTest
             row.CreateCell(1);
             row.CreateCell(2);
 
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheetHandler = new DefaultSpreadsheetHandler();
             spreadsheetHandler.Workbook = workbook;
             spreadsheetHandler.Sheet = workbook.GetSheetAt(0);
 
@@ -104,83 +105,27 @@ namespace PhoneTrafficServiceTest
                 "984139616874"
             };
 
-            HSSFWorkbook testWorkbook = this.CreateTestWorkbook(testSpreadSheetValues);
+            HSSFWorkbook testWorkbook = SpreadsheetUtils.CreateTestWorkbook(testSpreadSheetValues);
             Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>
             {
-                { "1423984271", "158" },
-                { "8009843264", "58421" },
-                { "1234567890", "0" },
-                { "1317462135", "7" }
+                { "01423984271", "158" },
+                { "08009843264", "58421" },
+                { "01234567890", "0" },
+                { "01317462135", "7" }
             };
 
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheetHandler = new DefaultSpreadsheetHandler();
             spreadsheetHandler.Workbook = testWorkbook;
             spreadsheetHandler.Sheet = testWorkbook.GetSheetAt(0);
 
             // Act.
-            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary, 10);
+            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary);
 
             // Assert.
             Assert.AreEqual("158", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(1).GetCell(4).StringCellValue);
             Assert.IsNull(spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(2).GetCell(4));
             Assert.AreEqual("58421", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(3).GetCell(4).StringCellValue);
             Assert.AreEqual("7", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(4).GetCell(4).StringCellValue);
-            Assert.AreEqual("0", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(5).GetCell(4).StringCellValue);
-        }
-
-        private HSSFWorkbook CreateTestWorkbook(string[] testSpreadSheetValues)
-        {
-            HSSFWorkbook workbook = new HSSFWorkbook();
-
-            ISheet sheet = workbook.CreateSheet();
-
-            for (int i = 0; i < testSpreadSheetValues.Length; i++)
-            {
-                IRow row = sheet.CreateRow(i);
-                row.CreateCell(0);
-                row.CreateCell(1).SetCellValue(testSpreadSheetValues[i]);
-                row.CreateCell(2);
-                row.CreateCell(3);
-            }
-
-            return workbook;
-        }
-
-        [Test]
-        public void TestPopulateincomingCalls_ShouldPopulateIncomingCalls_AlbanyHouseFormat()
-        {
-            // Arrange.
-            string[] testSpreadSheetValues =
-             {
-                "DDI Number",
-                "38476698501",
-                "98445211235",
-                null,
-                "4969415654",
-                "0062313497"
-            };
-
-            HSSFWorkbook testWorkbook = this.CreateTestWorkbook(testSpreadSheetValues);
-            Dictionary<string, string> incomingCallsDictionary = new Dictionary<string, string>
-            {
-                { "5211235", "584" },
-                { "6698501", "3642975" },
-                { "9415654", "55" },
-                { "2313497", "0" }
-            };
-
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
-            spreadsheetHandler.Workbook = testWorkbook;
-            spreadsheetHandler.Sheet = testWorkbook.GetSheetAt(0);
-
-            // Act.
-            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary, 7);
-
-            // Assert.
-            Assert.AreEqual("3642975", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(1).GetCell(4).StringCellValue);
-            Assert.AreEqual("584", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(2).GetCell(4).StringCellValue);
-            Assert.IsNull(spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(3).GetCell(4));
-            Assert.AreEqual("55", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(4).GetCell(4).StringCellValue);
             Assert.AreEqual("0", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(5).GetCell(4).StringCellValue);
         }
 
@@ -194,7 +139,7 @@ namespace PhoneTrafficServiceTest
             row.CreateCell(0).SetCellValue("Test Value.");
             row.CreateCell(1).SetCellValue("013169730324");
 
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheetHandler = new DefaultSpreadsheetHandler();
 
             // Act.
             string ddiNumber = spreadsheetHandler.GetDdiNumberFromRow(row);
@@ -212,7 +157,7 @@ namespace PhoneTrafficServiceTest
             IRow row = sheet.CreateRow(0);
             row.CreateCell(0).SetCellValue("Test Value.");
 
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheetHandler = new DefaultSpreadsheetHandler();
 
             // Act.
             string ddiNumber = spreadsheetHandler.GetDdiNumberFromRow(row);
@@ -240,7 +185,7 @@ namespace PhoneTrafficServiceTest
 
             string ddiNumber = "98621347";
 
-            SpreadsheetHandler spreadsheethandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheethandler = new DefaultSpreadsheetHandler();
 
             // Act.
             spreadsheethandler.PopulateTraffic(incomingCallsDictionary, ddiNumber, cell);
@@ -268,34 +213,13 @@ namespace PhoneTrafficServiceTest
 
             string ddiNumber = "98621347";
 
-            SpreadsheetHandler spreadsheethandler = new SpreadsheetHandler();
+            DefaultSpreadsheetHandler spreadsheethandler = new DefaultSpreadsheetHandler();
 
             // Act.
             spreadsheethandler.PopulateTraffic(incomingCallsDictionary, ddiNumber, cell);
 
             // Assert.
             Assert.AreEqual("0", cell.StringCellValue);
-        }
-
-        [Test]
-        [TestCase("ABCDEFGHIJ0123456789", "0123456789", 10)]
-        [TestCase("58432165974139874651268458", "4651268458", 10)]
-        [TestCase("ABCDFGG!\"£$^&1236845", "$^&1236845", 10)]
-        [TestCase("123", "123", 10)]
-        [TestCase("ABCDEF", "ABCDEF", 10)]
-        [TestCase("08425987316", "5987316", 7)]
-        [TestCase("12389498745", "9498745", 7)]
-        [TestCase("59742568946", "2568946", 7)]
-        public void TestGetLastNCharacters_ShouldReturnLastNCharacters(string testString, string expected, int numberOfCharacters)
-        {
-            // Arrange.
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler();
-
-            // Act.
-            string lastDigits = spreadsheetHandler.GetLastNCharacters(testString, numberOfCharacters);
-
-            // Assert.
-            Assert.AreEqual(expected, lastDigits);
         }
     }
 }

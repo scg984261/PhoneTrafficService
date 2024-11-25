@@ -3,6 +3,7 @@ using System.Configuration;
 using log4net;
 using log4net.Config;
 using PhoneTrafficService.CsvFileProcessors;
+using PhoneTrafficService.SpreadsheetFileHandlers;
 
 namespace PhoneTrafficService
 {
@@ -15,8 +16,8 @@ namespace PhoneTrafficService
         public static string PhoneNumbersAllocated { get; set; } = ConfigurationManager.AppSettings.Get("PhoneNumbersAllocatedSpreadsheet");
         public static string IncomingFileLocation { get; set; } = ConfigurationManager.AppSettings.Get("IncomingFilePath");
         public static string ApplicationRunMode { get; set; } = ConfigurationManager.AppSettings.Get("RunMode");
-        public static int LastNCharacters { get; set; } = -1;
         public static ICsvFileProcessor CsvFileProcessor { get; set; }
+        public static DefaultSpreadsheetHandler SpreadsheetHandler { get; set; }
 
         static Program()
         {
@@ -36,12 +37,12 @@ namespace PhoneTrafficService
             if (ApplicationRunMode == "ALBANY_HOUSE")
             {
                 CsvFileProcessor = new AlbanyHouseCsvFileProcessor(IncomingFileLocation);
-                LastNCharacters = 7;
+                SpreadsheetHandler = new AlbanyHouseSpreadsheetHandler(PhoneNumbersAllocated);
             }
             else if (ApplicationRunMode == "HUDSON_HOUSE")
             {
                 CsvFileProcessor = new HudsonHouseCsvFileProcessor(IncomingFileLocation);
-                LastNCharacters = 10;
+                SpreadsheetHandler = new DefaultSpreadsheetHandler(PhoneNumbersAllocated);
             }
             else
             {
@@ -70,10 +71,9 @@ namespace PhoneTrafficService
 
             CsvFileProcessor.PopulateIncomingCalls(incomingCallsDictionary, lines);
 
-            SpreadsheetHandler spreadsheetHandler = new SpreadsheetHandler(PhoneNumbersAllocated);
-            spreadsheetHandler.SetHeader();
-            spreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary, LastNCharacters);
-            spreadsheetHandler.SaveWorkbook();
+            SpreadsheetHandler.SetHeader();
+            SpreadsheetHandler.PopulateIncomingCalls(incomingCallsDictionary);
+            SpreadsheetHandler.SaveWorkbook();
 
             log.Info("End of program.");
         }

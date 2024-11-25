@@ -5,14 +5,14 @@ using log4net;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 
-namespace PhoneTrafficService
+namespace PhoneTrafficService.SpreadsheetFileHandlers
 {
     /// <summary>
     /// <c>Class</c> containing methods for handling logic to manipulate spreadsheets.
     /// </summary>
-    public class SpreadsheetHandler
+    public class DefaultSpreadsheetHandler
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(SpreadsheetHandler));
+        private static readonly ILog log = LogManager.GetLogger(typeof(DefaultSpreadsheetHandler));
 
         public string FilePath { get; set; }
         public HSSFWorkbook Workbook { get; set; }
@@ -21,7 +21,7 @@ namespace PhoneTrafficService
         /// <summary>
         /// Default no-args constructor.
         /// </summary>
-        public SpreadsheetHandler()
+        public DefaultSpreadsheetHandler()
         {
         }
 
@@ -30,7 +30,7 @@ namespace PhoneTrafficService
         /// </summary>
         /// <param name="spreadsheetFilePath">Path of the spreadsheet that this <b><c>SpreadsheetHandler</c></b> will work with.</param>
         /// <exception cref="Exception">Thrown if an <b><c>Exception</c></b> is caught attempting to initialise an <b><c>HSSFWorkbook</c></b> using the path provided.</exception>
-        public SpreadsheetHandler(string spreadsheetFilePath)
+        public DefaultSpreadsheetHandler(string spreadsheetFilePath)
         {
             log.Debug($"Attempting to create Spreadsheet Handler with path: {spreadsheetFilePath}.");
             this.FilePath = spreadsheetFilePath;
@@ -85,7 +85,7 @@ namespace PhoneTrafficService
         /// </summary>
         /// <param name="incomingCallsDictionary"><b><c>Dictionary</c></b> containing the DDI numbers and number of call for each one.</param>
         /// <param name="numberOfDigits">The number of digits that will be used to match DDI numbers on the spreadsheet with numbers from the Incoming calls <b><c>Dictionary</c></b>.</param>
-        public void PopulateIncomingCalls(Dictionary<string, string> incomingCallsDictionary, int numberOfDigits)
+        public void PopulateIncomingCalls(Dictionary<string, string> incomingCallsDictionary)
         {
             for (int currentRowNumber = 1; currentRowNumber <= this.Sheet.LastRowNum; currentRowNumber++)
             {
@@ -99,7 +99,6 @@ namespace PhoneTrafficService
                     }
 
                     ICell cellE = this.Sheet.GetRow(currentRowNumber).CreateCell(4);
-                    ddiNumber = this.GetLastNCharacters(ddiNumber, numberOfDigits);
                     this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
                 }
                 catch (Exception exception)
@@ -117,7 +116,7 @@ namespace PhoneTrafficService
         /// </summary>
         /// <param name="row"></param>
         /// <returns>The DDI Number in <b><c>string</c></b> format.</returns>
-        public string GetDdiNumberFromRow(IRow row)
+        public virtual string GetDdiNumberFromRow(IRow row)
         {
             try
             {
@@ -155,18 +154,6 @@ namespace PhoneTrafficService
                 log.Debug($"No match made for DDI Number: {ddiNumber} - setting traffic to 0 calls.");
                 cell.SetCellValue("0");
             }
-        }
-
-        /// <summary>
-        /// Accepts a <b><c>string</c></b>, and returns the last number of characters passed as argument. <br />
-        /// Passing in <b><c>"Hello, World!"</c></b> and 3 will return <b><c>"ld!"</c></b>.
-        /// </summary>
-        /// <param name="str">The string to be truncated.</param>
-        /// <param name="number">The number of characters to be returned.</param>
-        /// <returns></returns>
-        public string GetLastNCharacters(string str, int number)
-        {
-            return str.Substring(Math.Max(0, str.Length - number));
         }
 
         /// <summary>

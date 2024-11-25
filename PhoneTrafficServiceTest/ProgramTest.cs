@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using PhoneTrafficService;
 using PhoneTrafficService.CsvFileProcessors;
+using PhoneTrafficService.SpreadsheetFileHandlers;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 
@@ -30,6 +31,8 @@ namespace PhoneTrafficServiceTest
             // Simulate reading the location of INCOMING.CSV from configuration.
             Program.IncomingFileLocation = "C:\\Test\\Incoming\\File\\Location\\AlbanyHouse";
 
+            Program.PhoneNumbersAllocated = $@"{testDirectory}\Resources\AH Phone Numbers Allocated.xls";
+
             // Act.
             Program.DetermineRunMode();
 
@@ -37,7 +40,9 @@ namespace PhoneTrafficServiceTest
             Assert.IsTrue(Program.CsvFileProcessor is AlbanyHouseCsvFileProcessor);
             AlbanyHouseCsvFileProcessor fileProcessor = (AlbanyHouseCsvFileProcessor)Program.CsvFileProcessor;
             Assert.AreEqual("C:\\Test\\Incoming\\File\\Location\\AlbanyHouse", fileProcessor.IncomingFileLocation);
-            Assert.AreEqual(7, Program.LastNCharacters);
+
+            Assert.IsTrue(Program.SpreadsheetHandler is AlbanyHouseSpreadsheetHandler);
+            Assert.IsTrue(Program.SpreadsheetHandler.FilePath.EndsWith("\\Resources\\AH Phone Numbers Allocated.xls"));
         }
 
         [Test]
@@ -57,7 +62,6 @@ namespace PhoneTrafficServiceTest
             Assert.IsTrue(Program.CsvFileProcessor is HudsonHouseCsvFileProcessor);
             HudsonHouseCsvFileProcessor fileProcessor = (HudsonHouseCsvFileProcessor)Program.CsvFileProcessor;
             Assert.AreEqual("C:\\Test\\Incoming\\File\\Location\\HudsonHouse", fileProcessor.IncomingFileLocation);
-            Assert.AreEqual(10, Program.LastNCharacters);
         }
 
         [Test]
