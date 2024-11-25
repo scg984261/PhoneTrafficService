@@ -89,16 +89,25 @@ namespace PhoneTrafficService
         {
             for (int currentRowNumber = 1; currentRowNumber <= this.Sheet.LastRowNum; currentRowNumber++)
             {
-                string ddiNumber = this.GetDdiNumberFromRow(this.Sheet.GetRow(currentRowNumber));
-
-                if (ddiNumber == string.Empty)
+                try
                 {
-                    continue;
-                }
+                    string ddiNumber = this.GetDdiNumberFromRow(this.Sheet.GetRow(currentRowNumber));
 
-                ICell cellE = this.Sheet.GetRow(currentRowNumber).CreateCell(4);
-                ddiNumber = this.GetLastNCharacters(ddiNumber, numberOfDigits);
-                this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
+                    if (ddiNumber == string.Empty)
+                    {
+                        continue;
+                    }
+
+                    ICell cellE = this.Sheet.GetRow(currentRowNumber).CreateCell(4);
+                    ddiNumber = this.GetLastNCharacters(ddiNumber, numberOfDigits);
+                    this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
+                }
+                catch (Exception exception)
+                {
+                    string errorMessage = $"Error occurred attempting to read DDI Number from row number: {currentRowNumber + 1}. Exception was caught.";
+                    log.Error(errorMessage);
+                    log.Error(exception);
+                }
             }
         }
 
