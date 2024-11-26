@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<ComponentGroup Id="ProductComponents">
+			<ComponentRef Id="MainAppShortcut" />
+		</ComponentGroup>
+		<DirectoryRef Id="INSTALLFOLDER" FileSource="..\PhoneTrafficService\bin\$(var.Platform)\$(var.Configuration)\">
+			<Component Id="MainAppShortcut" Guid="{5A91D46C-D131-4556-81AB-92D2A0DD3D35}">
+				<!-- Shortcut to main application  -->
+				<Shortcut Id="MainAppShortcut"
+						  Name="!(loc.ProductName)"
+						  Target="[INSTALLFOLDER]PhoneTrafficService.exe"
+						  Directory="ProductShortcutDirectory"
+						  WorkingDirectory="INSTALLFOLDER"
+						  Icon="icon.ico">
+				</Shortcut>
+				<RegistryValue
+					Id="RegShortcutKey"
+					Root="HKCU"
+					Key="SOFTWARE\!(loc.ProductNameFolder)"
+					Name="Shortcut"
+					Value="1"
+					Type="integer"
+					KeyPath="yes" />
+				<!--Remove start menu items -->
+				<RemoveFolder Id="RemoveShortcutFolder" Directory="ProductShortcutDirectory" On="uninstall" />
+				<!-- Remove the Logs folder to ensure a clean uninstall. -->
+				<RemoveFolder Id="RemoveLogsFolder" Directory="LogsDirectory" On="uninstall" />
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+</Wix>
+
