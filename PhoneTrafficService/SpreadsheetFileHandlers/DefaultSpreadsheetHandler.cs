@@ -84,29 +84,27 @@ namespace PhoneTrafficService.SpreadsheetFileHandlers
         /// Populates the incoming calls Column of the Spreadsheet using data from the incoming calls dictionary. <br />
         /// </summary>
         /// <param name="incomingCallsDictionary"><b><c>Dictionary</c></b> containing the DDI numbers and number of call for each one.</param>
-        /// <param name="numberOfDigits">The number of digits that will be used to match DDI numbers on the spreadsheet with numbers from the Incoming calls <b><c>Dictionary</c></b>.</param>
         public void PopulateIncomingCalls(Dictionary<string, string> incomingCallsDictionary)
         {
             for (int currentRowNumber = 1; currentRowNumber <= this.Sheet.LastRowNum; currentRowNumber++)
             {
-                try
-                {
-                    string ddiNumber = this.GetDdiNumberFromRow(this.Sheet.GetRow(currentRowNumber));
+                IRow row = this.Sheet.GetRow(currentRowNumber);
 
-                    if (ddiNumber == string.Empty)
-                    {
-                        continue;
-                    }
-
-                    ICell cellE = this.Sheet.GetRow(currentRowNumber).CreateCell(4);
-                    this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
-                }
-                catch (Exception exception)
+                if (row == null)
                 {
-                    string errorMessage = $"Error occurred attempting to read DDI Number from row number: {currentRowNumber + 1}. Exception was caught.";
-                    log.Error(errorMessage);
-                    log.Error(exception);
+                    this.Sheet.CreateRow(currentRowNumber);
+                    continue;
                 }
+
+                string ddiNumber = this.GetDdiNumberFromRow(row);
+
+                if (ddiNumber == string.Empty)
+                {
+                    continue;
+                }
+
+                ICell cellE = row.CreateCell(4);
+                this.PopulateTraffic(incomingCallsDictionary, ddiNumber, cellE);
             }
         }
 

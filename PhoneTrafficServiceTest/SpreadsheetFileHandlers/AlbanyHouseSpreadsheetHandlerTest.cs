@@ -2,11 +2,38 @@
 using NUnit.Framework;
 using NPOI.HSSF.UserModel;
 using System.Collections.Generic;
+using NPOI.SS.UserModel;
 
 namespace PhoneTrafficServiceTest.SpreadsheetFileHandlers
 {
     public class AlbanyHouseSpreadsheetHandlerTest
     {
+        private static readonly string testDirectory = TestContext.CurrentContext.TestDirectory;
+
+        [Test]
+        public void TestConstructor_NoArgs()
+        {
+            AlbanyHouseSpreadsheetHandler testHandler = new AlbanyHouseSpreadsheetHandler();
+
+            Assert.IsNull(testHandler.FilePath);
+            Assert.IsNull(testHandler.Workbook);
+            Assert.IsNull(testHandler.Sheet);
+        }
+
+        [Test]
+        public void TestConstructor()
+        {
+            string filePath = $@"{testDirectory}\Resources\Phone Numbers Allocated.xls";
+            AlbanyHouseSpreadsheetHandler testHandler = new AlbanyHouseSpreadsheetHandler(filePath);
+
+            Assert.IsTrue(testHandler.FilePath.EndsWith("Resources\\Phone Numbers Allocated.xls"));
+
+            Assert.AreEqual(3, testHandler.Workbook.NumberOfSheets);
+
+            Assert.AreEqual(24, testHandler.Sheet.LastRowNum);
+            Assert.AreEqual("Sheet1", testHandler.Sheet.SheetName);
+        }
+
         [Test]
         public void TestPopulateincomingCalls_ShouldPopulateIncomingCalls()
         {
@@ -43,6 +70,35 @@ namespace PhoneTrafficServiceTest.SpreadsheetFileHandlers
             Assert.IsNull(spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(3).GetCell(4));
             Assert.AreEqual("55", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(4).GetCell(4).StringCellValue);
             Assert.AreEqual("0", spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(5).GetCell(4).StringCellValue);
+        }
+
+        [Test]
+        public void TestGetDdiNumberFromRow()
+        {
+            // Arrange.
+            string[] testSpreadSheetValues =
+             {
+                "DDI Number",
+                "46994564",
+                "1656987145",
+                null,
+                "13879265555",
+                "0399765694"
+            };
+
+            HSSFWorkbook testWorkbook = SpreadsheetUtils.CreateTestWorkbook(testSpreadSheetValues);
+
+            AlbanyHouseSpreadsheetHandler spreadsheetHandler = new AlbanyHouseSpreadsheetHandler();
+            spreadsheetHandler.Workbook = testWorkbook;
+            spreadsheetHandler.Sheet = testWorkbook.GetSheetAt(0);
+
+            ISheet testSheet = testWorkbook.GetSheetAt(0);
+
+            Assert.AreEqual("6994564", spreadsheetHandler.GetDdiNumberFromRow(testSheet.GetRow(1)));
+            Assert.AreEqual("6987145", spreadsheetHandler.GetDdiNumberFromRow(testSheet.GetRow(2)));
+            Assert.AreEqual(string.Empty, spreadsheetHandler.GetDdiNumberFromRow(testSheet.GetRow(3)));
+            Assert.AreEqual("9265555", spreadsheetHandler.GetDdiNumberFromRow(testSheet.GetRow(4)));
+            Assert.AreEqual("9765694", spreadsheetHandler.GetDdiNumberFromRow(testSheet.GetRow(5)));
         }
 
         [Test]

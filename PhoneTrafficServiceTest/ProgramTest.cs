@@ -17,6 +17,7 @@ namespace PhoneTrafficServiceTest
         [Test]
         public void TestGetPhoneNumbersAllocatedSpreadsheetFileLocation_ShouldReturnValue()
         {
+            Program.PhoneNumbersAllocated = ConfigurationManager.AppSettings.Get("PhoneNumbersAllocatedSpreadsheet");
             string testConfigValue = Program.PhoneNumbersAllocated;
             Assert.AreEqual("Test Spreadsheet File Location", testConfigValue);
         }

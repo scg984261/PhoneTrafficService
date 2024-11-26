@@ -4,7 +4,6 @@ using NPOI.SS.UserModel;
 using PhoneTrafficService.SpreadsheetFileHandlers;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using PhoneTrafficServiceTest.SpreadsheetFileHandlers;
 
 namespace PhoneTrafficServiceTest
@@ -19,12 +18,7 @@ namespace PhoneTrafficServiceTest
             string filePath = $@"{testDirectory}\Resources\Phone Numbers Allocated.xls";
             DefaultSpreadsheetHandler testHandler = new DefaultSpreadsheetHandler(filePath);
 
-            string[] stringArray = testHandler.FilePath.Split('\\');
-            string fileName = stringArray.Last();
-            string folderName = stringArray.Reverse().Skip(1).First();
-
-            Assert.AreEqual("Phone Numbers Allocated.xls", fileName);
-            Assert.AreEqual("Resources", folderName);
+            Assert.IsTrue(testHandler.FilePath.EndsWith("Resources\\Phone Numbers Allocated.xls"));
 
             Assert.AreEqual(3, testHandler.Workbook.NumberOfSheets);
 
@@ -88,6 +82,7 @@ namespace PhoneTrafficServiceTest
             // Assert.
             Assert.AreEqual(0, spreadsheetHandler.Workbook.GetSheetAt(0).FirstRowNum);
             Assert.AreEqual(0, spreadsheetHandler.Workbook.GetSheetAt(0).LastRowNum);
+            Assert.IsNull(spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(0).GetCell(4));
             Assert.AreEqual(3, spreadsheetHandler.Workbook.GetSheetAt(0).GetRow(0).LastCellNum);
         }
 
